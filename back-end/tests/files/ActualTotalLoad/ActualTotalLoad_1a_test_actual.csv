@@ -1,0 +1,4 @@
+Source;Dataset;AreaName;AreaTypeCode;MapCode;ResolutionCode;Year;Month;Day;DateTimeUTC;ActualTotalLoadValue;UpdateTimeUTC
+entso-e;ActualTotalLoad;Greece;CTY;GR;PT60M;2018;1;4;2018-01-03T22:00:00.000Z;4788.8;2018-09-04T08:31:06.000Z
+entso-e;ActualTotalLoad;Greece;CTY;GR;PT60M;2018;1;4;2018-01-03T23:00:00.000Z;4660.11;2018-09-04T08:16:40.000Z
+entso-e;ActualTotalLoad;Greece;CTY;GR;PT60M;2018;1;4;2018-01-04T00:00:00.000Z;4573.84;2018-09-04T08:31:06.000Z

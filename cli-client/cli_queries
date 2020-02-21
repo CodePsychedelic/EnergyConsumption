@@ -1,0 +1,156 @@
+node energy_group035 SCOPE Login --username admin --passw 321nimda
+node energy_group035 SCOPE Login --username test1 --passw 123
+node energy_group035 SCOPE Logout
+
+//ACTUAL
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --date 2018-01-04
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --month 2018-01
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --year 2018
+
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece
+
+//DAYAHEAD
+node energy_group035 SCOPE DayAheadTotalLoadForecast --timeres PT60M --area Greece --date 2018-01-04
+node energy_group035 SCOPE DayAheadTotalLoadForecast --timeres PT60M --area Greece --month 2018-01
+node energy_group035 SCOPE DayAheadTotalLoadForecast --timeres PT60M --area Greece --year 2018
+
+node energy_group035 SCOPE DayAheadTotalLoadForecast --timeres PT60M --area Greece
+
+
+//ACTUAL VS FORECAST
+
+node energy_group035 SCOPE ActualvsForecast --timeres PT60M --area Greece --date 2018-01-04
+node energy_group035 SCOPE ActualvsForecast --timeres PT60M --area Greece --month 2018-01
+node energy_group035 SCOPE ActualvsForecast --timeres PT60M --area Greece --year 2018
+
+node energy_group035 SCOPE ActualvsForecast --timeres PT60M --area Greece
+
+
+// AGGREGATED GEN - solar 
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Solar --date 2018-01-04
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Solar --month 2018-01
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Solar --year 2018
+
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Solar
+
+
+
+// AGGREGATED GEN - AllTypes
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype AllTypes --date 2018-01-04
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype AllTypes --month 2018-01
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype AllTypes --year 2018
+
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype AllTypes
+
+
+// AGGREGATED GEN - Fossil
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil --date 2018-01-04
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil --month 2018-01
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil --year 2018
+
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil
+
+
+
+//SCENARIO
+
+// HealthCheck and Reset
+node energy_group035 SCOPE HealthCheck
+node energy_group035 SCOPE Reset --pop 1
+
+//Login using our default admin acc
+node energy_group035 SCOPE Login --username admin --passw 321nimda
+
+
+// Create user accounts
+node energy_group035 SCOPE Admin --newuser alkis --passw 123 --email alkisg1992@gmail.com --quota 10
+node energy_group035 SCOPE Admin --newuser stam --passw 123 --email stamv@gmail.com --quota 10
+
+
+// Check status of accounts
+node energy_group035 SCOPE Admin --userstatus alkis
+node energy_group035 SCOPE Admin --userstatus stam
+node energy_group035 SCOPE Admin --userstatus admin
+
+// Mod user info
+node energy_group035 SCOPE Admin --moduser alkis --email gk.alkiviadis@gmail.com --quota 5
+node energy_group035 SCOPE Admin --moduser stam --passw 321 --quota 5
+
+// Re-check
+node energy_group035 SCOPE Admin --userstatus alkis
+node energy_group035 SCOPE Admin --userstatus stam
+
+
+// Upload data to our files using cli interface
+node energy_group035 SCOPE Admin --newdata ActualTotalLoad --source ActualTotalLoad-10days_fixed.csv
+node energy_group035 SCOPE Admin --newdata AggregatedGenerationPerType --source AggregatedGenerationPerType-10days_fixed.csv
+node energy_group035 SCOPE Admin --newdata DayAheadTotalLoadForecast --source DayAheadTotalLoadForecast-10days_fixed.csv
+
+// DATA FETCH -- test with admin acc for infinite quota
+// ######################################################################################################################################################################
+// Fetch data from ActualTotalLoad,[Greece, PT60M] grouped by date
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --date 2018-01-04
+
+// Fetch data from ActualTotalLoad,[Greece, PT60M] grouped by month
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --month 2018-01
+
+// Fetch data from ActualTotalLoad,[Greece, PT60M] grouped by year
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --year 2018
+
+--------------------------------------------------------------------------------------------------------
+
+// Fetch data from DayAheadTotalLoadForecast,[Greece, PT60M] grouped by date
+node energy_group035 SCOPE DayAheadTotalLoadForecast --timeres PT60M --area Greece --date 2018-01-04
+
+// Fetch data from DayAheadTotalLoadForecast,[Greece, PT60M] grouped by month
+node energy_group035 SCOPE DayAheadTotalLoadForecast --timeres PT60M --area Greece --month 2018-01
+
+// Fetch data from DayAheadTotalLoadForecast,[Greece, PT60M] grouped by year
+node energy_group035 SCOPE DayAheadTotalLoadForecast --timeres PT60M --area Greece --year 2018
+
+--------------------------------------------------------------------------------------------------------
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Solar] grouped by date
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Solar --date 2018-01-04
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Solar] grouped by month
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Solar --month 2018-01
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Solar] grouped by year
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Solar --year 2018
+
+--------------------------------------------------------------------------------------------------------
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, AllTypes] grouped by date
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype AllTypes --date 2018-01-04
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Solar] grouped by month
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype AllTypes --month 2018-01
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Solar] grouped by year
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype AllTypes --year 2018
+
+--------------------------------------------------------------------------------------------------------
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Fossil (regex)] grouped by date
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil --date 2018-01-04
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Fossil (regex) ] grouped by month
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil --month 2018-01
+
+// Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Fossil (regex) ] grouped by year
+node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil --year 2018
+
+// ######################################################################################################################################################################
+
+// Logout from admin acc
+node energy_group035 SCOPE Logout
+
+// Login with client
+node energy_group035 SCOPE Login --username stam --passw 321
+
+// Fetch data until no quota
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --year 2018
+
+// Showoff refresh quota
+node energy_group035 SCOPE ActualTotalLoad --timeres PT60M --area Greece --year 2018
