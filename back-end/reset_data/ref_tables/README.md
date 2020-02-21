@@ -1,0 +1,1 @@
+Reset data for the reference tables of our app. 
