@@ -2,7 +2,8 @@ const app = require('../../../../app') // Link to your server file
 const supertest = require('supertest')
 const request = supertest(app)
 const qs = require('qs');
-
+const fs = require('fs');
+const path = require('path');
 // need mongoose and User model
 const mongoose = require('mongoose');
 const User = require('../../../../api/models/User');
@@ -36,12 +37,25 @@ describe('POST /energy/api/Admin/users', () => {
         process.env.UPLOADS = "./tests/controllers_v1.1/Admin/Files/ActualTotalLoad_uploads/"
         process.env.BATCH_SIZE = 1000;
 
+
+        
+        
+        
         mongoose.set('useCreateIndex', true);
         // init
         try{
             await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
             await User.deleteMany({username: {$regex: 'test'}});
             await User.deleteMany({username: 'admin'});
+            await ActualTotalLoad.deleteMany({AreaName: {$regex:'__TEST__'}}); //find({AreaName: {$regex:'__TEST__'}})
+
+            const files = fs.readdirSync(process.env.UPLOADS);
+            console.log(files);
+            for (const file of files) {
+                fs.unlinkSync(process.env.UPLOADS + file);
+            }
+            
+
         }catch(err){
             console.log(err);
         }     
