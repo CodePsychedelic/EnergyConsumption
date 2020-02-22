@@ -11,7 +11,8 @@ const jwt = require('jsonwebtoken');
 
 
 const Blacklist = require('../../../api/models/BlackListedToken');
-
+const DayAheadTotalLoadForecast = require('../../../api/models/DayAheadTotalLoadForecast');
+const ActualTotalLoad = require('../../../api/models/ActualTotalLoad');
 // /energy/api/ActualvsForecast/.. ENDPOINT
 // ================================================================================================================================================
 describe('GET /energy/api/ActualvsForecast/../year/YYYY-MM-DD', () => {
@@ -215,13 +216,60 @@ describe('GET /energy/api/ActualvsForecast/../year/YYYY-MM-DD', () => {
         request.get('/energy/api/ActualvsForecast/Greece/PT60M/date/2018-01-04')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(200)
-        .end((err, res) => {
+        .end(async (err, res) => {
             if(!err){
                 expect(res.body).toHaveProperty('count');
                 expect(res.body.count).toBe(24);
 
                 expect(res.body).toHaveProperty('results');
                 expect(res.body.results.length).toBe(24);
+
+
+                await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
+
+                let date = new Date('2018-01-03T22:00:00.000Z');    // initial DateTime value 
+                for(i=0; i<24; i++){
+                    // what should the results contain (specs V1.1)
+                    // ------------------------------------------------------------------------
+                    expect(res.body.results[i]).toHaveProperty('Source');
+                    expect(res.body.results[i]).toHaveProperty('Dataset');
+                    expect(res.body.results[i]).toHaveProperty('AreaName');
+                    expect(res.body.results[i]).toHaveProperty('AreaTypeCode');
+                    expect(res.body.results[i]).toHaveProperty('MapCode');
+                    expect(res.body.results[i]).toHaveProperty('ResolutionCode');
+                    expect(res.body.results[i]).toHaveProperty('Year');
+                    expect(res.body.results[i]).toHaveProperty('Month');
+                    expect(res.body.results[i]).toHaveProperty('Day');
+                    expect(res.body.results[i]).toHaveProperty('DateTimeUTC');
+                    expect(res.body.results[i]).toHaveProperty('DayAheadTotalLoadForecastValue');
+                    expect(res.body.results[i]).toHaveProperty('ActualTotalLoadValue');
+                    // ------------------------------------------------------------------------
+
+                    // values 
+                    // ------------------------------------------------------------------------
+                    expect(res.body.results[i].Source).toBe('entso-e');
+                    expect(res.body.results[i].Dataset).toBe('ActualVSForecastedTotalLoad');
+                    expect(res.body.results[i].AreaName).toBe('Greece');
+                    expect(res.body.results[i].AreaTypeCode).toBe('CTY');
+                    expect(res.body.results[i].MapCode).toBe('GR');
+                    expect(res.body.results[i].ResolutionCode).toBe('PT60M');
+                    expect(res.body.results[i].Year).toBe(2018);
+                    expect(res.body.results[i].Month).toBe(1);
+                    expect(res.body.results[i].Day).toBe(4);
+                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString());   // test the datetime. Will increase by one hour in the end of the loop
+                    let r1 = await ActualTotalLoad.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date});    // find the record in database                
+                    expect(r1).not.toBe(null);                                                                           // should not be null
+                    expect(res.body.results[i].ActualTotalLoadValue).toBe(r1.TotalLoadValue);                            // and TotalLoadValues must agree
+                    let r2 = await DayAheadTotalLoadForecast.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date});    // find the record in database      
+                    expect(r2).not.toBe(null);                                                                           // should not be null
+                    expect(res.body.results[i].DayAheadTotalLoadForecastValue).toBe(r2.TotalLoadValue);                            // and TotalLoadValues must agree          
+                    // ------------------------------------------------------------------------
+                    
+                    
+                    date.setHours(date.getHours()+1);
+                }
+                mongoose.disconnect();
+
                 done();
             }else return done(err);
         })

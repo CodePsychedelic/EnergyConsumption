@@ -11,6 +11,8 @@ const jwt = require('jsonwebtoken');
 
 
 const Blacklist = require('../../../api/models/BlackListedToken');
+const ActualTotalLoad = require('../../../api/models/ActualTotalLoad');
+const DayAheadTotalLoadForecast = require('../../../api/models/DayAheadTotalLoadForecast');
 
 // /energy/api/ActualvsForecast/.. ENDPOINT
 // ================================================================================================================================================
@@ -210,13 +212,68 @@ describe('GET /energy/api/ActualvsForecast/../year/YYYY', () => {
         request.get('/energy/api/ActualvsForecast/Greece/PT60M/year/2018')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(200)
-        .end((err, res) => {
+        .end(async (err, res) => {
             if(!err){
                 expect(res.body).toHaveProperty('count');
                 expect(res.body.count).toBe(1);
 
                 expect(res.body).toHaveProperty('results');
                 expect(res.body.results.length).toBe(1);
+
+                await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
+
+                let i = 0;
+                // what should the results contain (specs V1.1)
+                // ------------------------------------------------------------------------
+                expect(res.body.results[i]).toHaveProperty('Source');
+                expect(res.body.results[i]).toHaveProperty('Dataset');
+                expect(res.body.results[i]).toHaveProperty('AreaName');
+                expect(res.body.results[i]).toHaveProperty('AreaTypeCode');
+                expect(res.body.results[i]).toHaveProperty('MapCode');
+                expect(res.body.results[i]).toHaveProperty('ResolutionCode');
+                expect(res.body.results[i]).toHaveProperty('Year');
+                expect(res.body.results[i]).toHaveProperty('Month');
+                expect(res.body.results[i]).toHaveProperty('DayAheadTotalLoadForecastByMonthValue');
+                expect(res.body.results[i]).toHaveProperty('ActualTotalLoadByMonthValue');
+                // ------------------------------------------------------------------------
+
+                // values 
+                // ------------------------------------------------------------------------
+                expect(res.body.results[i].Source).toBe('entso-e');
+                expect(res.body.results[i].Dataset).toBe('ActualVSForecastedTotalLoad');
+                expect(res.body.results[i].AreaName).toBe('Greece');
+                expect(res.body.results[i].AreaTypeCode).toBe('CTY');
+                expect(res.body.results[i].MapCode).toBe('GR');
+                expect(res.body.results[i].ResolutionCode).toBe('PT60M');
+                expect(res.body.results[i].Year).toBe(2018);
+                expect(res.body.results[i].Month).toBe(1);
+    
+                
+                let r1 = await ActualTotalLoad.aggregate([
+                    { $match: {"AreaName": 'Greece', "Year": 2018, "Month": i+1, "ResolutionCodeId": 2} },
+                    
+                    { $group: { _id: {Year:"$Year",Month:"$Month"}, total: { $sum: "$TotalLoadValue" }, count: {$sum: 1} } },
+                    
+                    { $sort : { _id:1 } }
+        
+                ]);                
+                expect(r1).not.toBe(null);                 
+                expect(res.body.results[i].ActualTotalLoadByMonthValue).toBe(r1[0].total);                                               // and TotalLoadValues must agree
+                let r2 = await DayAheadTotalLoadForecast.aggregate([
+                    { $match: {"AreaName": 'Greece', "Year": 2018, "Month": i+1, "ResolutionCodeId": 2} },
+                    
+                    { $group: { _id: {Year:"$Year",Month:"$Month"}, total: { $sum: "$TotalLoadValue" }, count: {$sum: 1} } },
+                    
+                    { $sort : { _id:1 } }
+        
+                ]);
+                expect(r2).not.toBe(null);                                                                                              // should not be null
+                expect(res.body.results[i].DayAheadTotalLoadForecastByMonthValue).toBe(r2[0].total);                                     // and TotalLoadValues must agree          
+                // ------------------------------------------------------------------------
+            
+                mongoose.disconnect();
+
+
                 done();
             }else return done(err);
         })
