@@ -1,0 +1,1 @@
+AggregatedGenerationPerType csv files download folder
