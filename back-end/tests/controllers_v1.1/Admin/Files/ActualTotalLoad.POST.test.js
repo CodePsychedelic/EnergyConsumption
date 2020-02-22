@@ -36,61 +36,64 @@ describe('POST /energy/api/Admin/users', () => {
         process.env.UPLOADS = "./tests/controllers_v1.1/Admin/Files/ActualTotalLoad_uploads/"
         process.env.BATCH_SIZE = 1000;
 
-        
         mongoose.set('useCreateIndex', true);
-        await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
-        
-        // create a user to view status
-        let user1 = new User({
-            _id: new mongoose.Types.ObjectId(),
-            username: 'test1',
-            passwd: bcrypt.hashSync('123',10),
-            email: 'test1@gmail.com',
-            quota: 100,           
-            quota_limit: 100,
-            role: 'USER',
-            last_refresh: new Date() 
-        });
-        
-        let user2 = new User({
-            _id: new mongoose.Types.ObjectId(),
-            username: 'test2',
-            passwd: bcrypt.hashSync('123',10),
-            email: 'test2@gmail.com',
-            quota: -1,           
-            quota_limit: -1,
-            role: 'ADMIN',
-            last_refresh: new Date() 
-        });
-        
+        // init
+        try{
+            await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
+            await User.deleteMany({username: {$regex: 'test'}});
+            await User.deleteMany({username: 'admin'});
+        }catch(err){
+            console.log(err);
+        }     
 
-        await user1.save();
-        await user2.save();
-        await mongoose.disconnect();
+
         // login admin user
         try{
-            // login admin
-            let res1 = await request.post('/energy/api/Login')
-                                    .expect(200)
-                                    .send(qs.stringify({username: 'admin', passw: '321nimda'}))
-                                    .set({'content-type': 'application/x-www-form-urlencoded;charset=utf-8'});
-        
-            // login test1 single user
-            let res2 = await request.post('/energy/api/Login')
-                                    .expect(200)
-                                    .send(qs.stringify({username: 'test1', passw: '123'}))
-                                    .set({'content-type': 'application/x-www-form-urlencoded;charset=utf-8'});
-        
-            // login test2 admin user
-            let res3 = await request.post('/energy/api/Login')
-                                    .expect(200)
-                                    .send(qs.stringify({username: 'test2', passw: '123'}))
-                                    .set({'content-type': 'application/x-www-form-urlencoded;charset=utf-8'});
+
 
             
-            token = res1.body.token;
-            token1 = res2.body.token;
-            token2 = res3.body.token;
+         // super
+            // ---------------------------------------------
+            token = jwt.sign({
+                username: 'admin',
+                email: 'admin@gmail.com',
+                role: 'SUPER'
+            }, 
+
+            process.env.JWT_KEY || 'secret',
+            {
+                expiresIn: "2h"
+            });
+
+            // ---------------------------------------------
+            // user
+            // ---------------------------------------------
+            token1 = jwt.sign({
+                username: 'test1',
+                email: 'test1@gmail.com',
+                role: 'USER'
+            }, 
+
+            process.env.JWT_KEY || 'secret',
+            {
+                expiresIn: "2h"
+            });
+            // ---------------------------------------------
+            
+            // admin
+            // ---------------------------------------------
+            token2 = jwt.sign({
+                username: 'test2',
+                email: 'test2@gmail.com',
+                role: 'ADMIN'
+            }, 
+
+            process.env.JWT_KEY || 'secret',
+            {
+                expiresIn: "2h"
+            });
+            // ---------------------------------------------
+
             // EXPIRED TOKEN
             // ---------------------------------------------
             token_exp = jwt.sign({
@@ -105,6 +108,46 @@ describe('POST /energy/api/Admin/users', () => {
             // ---------------------------------------------
 
 
+            // SUPER USER
+            let admin = new User({
+                _id: new mongoose.Types.ObjectId(),
+                username: 'admin',
+                passwd: bcrypt.hashSync('321nimda', 10),
+                email: 'super@gmail.com',
+                quota: -1,
+                quota_limit: -1,
+                role: 'SUPER'
+            });
+                        
+            // create a user to view status
+            let user1 = new User({
+                _id: new mongoose.Types.ObjectId(),
+                username: 'test1',
+                passwd: bcrypt.hashSync('123',10),
+                email: 'test1@gmail.com',
+                quota: 100,           
+                quota_limit: 100,
+                role: 'USER',
+                last_refresh: new Date() 
+            });
+            
+            let user2 = new User({
+                _id: new mongoose.Types.ObjectId(),
+                username: 'test2',
+                passwd: bcrypt.hashSync('123',10),
+                email: 'test2@gmail.com',
+                quota: -1,           
+                quota_limit: -1,
+                role: 'ADMIN',
+                last_refresh: new Date() 
+            });
+            
+            await admin.save();
+            await user1.save();
+            await user2.save();
+            await mongoose.disconnect();
+
+
             done();
         
         }catch(err){
@@ -113,16 +156,6 @@ describe('POST /energy/api/Admin/users', () => {
 
         
      });
-
-     afterAll(async function(done){
-        await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
-        await User.deleteOne({username:'test1'});
-        await User.deleteOne({username:'test2'});
-        await mongoose.disconnect();
-        
-        done();
-    });
-
 
 
     afterEach(async function(done){
