@@ -9,8 +9,9 @@ module.exports = {
             MapCode: data.mapcode_doc.MapCodeText,
             ResolutionCode: data.rescode,
             Year: Number(data.y),
-            DayAheadTotalLoadForecastByDayValue: document.total,
-            ActualTotalLoadValue: document.ForActualTotalLoad[0].total
+            Month: document._id.Month,
+            DayAheadTotalLoadForecastByMonthValue: document.total,
+            ActualTotalLoadByMonthValue: document.ForActualTotalLoad[0].total
         }
     },
 
@@ -29,8 +30,9 @@ module.exports = {
             {id: 'MapCode', title: 'MapCode'},
             {id: 'ResolutionCode', title: 'ResolutionCode'},
             {id: 'Year', title: 'Year'},
-            {id: 'DayAheadTotalLoadForecastByDayValue', title: 'DayAheadTotalLoadForecastByDayValue'},
-            {id: 'ActualTotalLoadValue', title: 'ActualTotalLoadValue'},
+            {id: 'Month', title: 'Month'},
+            {id: 'DayAheadTotalLoadForecastByMonthValue', title: 'DayAheadTotalLoadForecastByMonthValue'},
+            {id: 'ActualTotalLoadByMonthValue', title: 'ActualTotalLoadByMonthValue'},
         
         ],
         fieldDelimiter: ';'

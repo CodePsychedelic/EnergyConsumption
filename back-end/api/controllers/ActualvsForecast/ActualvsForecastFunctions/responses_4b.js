@@ -12,7 +12,7 @@ module.exports = {
             Month: Number(data.m),
             Day: Number(document._id.Day),
             DayAheadTotalLoadForecastByDayValue: document.total,
-            ActualTotalLoadValue: document.ForActualTotalLoad[0].total
+            ActualTotalLoadByDayValue: document.ForActualTotalLoad[0].total
         }
     },
 
@@ -34,7 +34,7 @@ module.exports = {
             {id: 'Month', title: 'Month'},
             {id: 'Day', title: 'Day'},
             {id: 'DayAheadTotalLoadForecastByDayValue', title: 'DayAheadTotalLoadForecastByDayValue'},
-            {id: 'ActualTotalLoadValue', title: 'ActualTotalLoadValue'}
+            {id: 'ActualTotalLoadByDayValue', title: 'ActualTotalLoadByDayValue'}
             
         
         ],
