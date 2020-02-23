@@ -7,6 +7,7 @@
         "JWT_KEY": "secret",
         "MONGO_CONNECT": "mongodb://localhost:27017/softeng?readPreference=primary&appname=MongoDB%20Compass&ssl=false",
         "UPLOADS": "./uploads/",
+        "DOWNLOADS": "./files",
         "BATCH_SIZE": 30000,
 
 

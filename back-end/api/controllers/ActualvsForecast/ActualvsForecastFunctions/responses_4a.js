@@ -41,9 +41,17 @@ module.exports = {
         ],
         fieldDelimiter: ';'
         });
+
+        // We want to return UTC datetimes, therefore we are going to write the dates as ISO strings
+        // to prevent csv writer nonsense.
+        let docs2 = docs.map(doc => {
+            console.log(doc);
+            doc.DateTimeUTC = doc.DateTimeUTC.toISOString();
+            return doc;
+        });
         
         return csvWriter
-        .writeRecords(docs);
+        .writeRecords(docs2);
         
         
 
