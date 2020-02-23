@@ -1,6 +1,7 @@
 const app = require('../../../app') // Link to your server file
 const supertest = require('supertest')
 const request = supertest(app)
+const fs = require('fs');
 const qs = require('qs');
 
 // need mongoose and User model
@@ -8,7 +9,7 @@ const mongoose = require('mongoose');
 const User = require('../../../api/models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const csvs = require('csv-string');
 
 const Blacklist = require('../../../api/models/BlackListedToken');
 const ActualTotalLoad = require('../../../api/models/ActualTotalLoad');
@@ -30,6 +31,7 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
         process.env.HOME = "/energy/api";
         process.env.JWT_KEY = "secret";
         process.env.MONGO_CONNECT = "mongodb://localhost:27017/softeng_test?readPreference=primary&appname=MongoDB%20Compass&ssl=false" 
+        process.env.DOWNLOADS = './tests/controllers_v1.1/';
         
         try{
             mongoose.set('useCreateIndex', true);
@@ -269,6 +271,92 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
         })
     });        
     // ---------------------------------------------------------------------------------------------------------------------------
+
+
+
+     // GET - 200 ok by admin
+    // ---------------------------------------------------------------------------------------------------------------------------
+    it('Should create 200 - OK (ADMIN)', async done => {
+        request.get('/energy/api/ActualTotalLoad/Greece/PT60M/month/2018-01?format=csv')
+        .set({'X_OBSERVATORY_AUTH':token})
+        .expect(200)
+        .end(async (err, res) => {
+            if(!err){
+
+
+             // check the file unlink feature
+             const files = fs.readdirSync(process.env.DOWNLOADS + '/ActualTotalLoad');
+             expect(files.length).toBe(3);
+             
+
+             // check if response is of type text/csv
+             expect(res).toHaveProperty('type');
+             expect(res.type).toBe('text/csv');
+             
+             // if it is, parse the csv and check fields
+             try{
+                let data = csvs.parse(res.text);
+                expect(data.length).toBe(11);
+                
+                // HEADERS OF CSV FILE
+                let fields = data[0];
+                expect(fields[0]).toBe('Source');
+                expect(fields[1]).toBe('Dataset');
+                expect(fields[2]).toBe('AreaName');
+                expect(fields[3]).toBe('AreaTypeCode');
+                expect(fields[4]).toBe('MapCode');
+                expect(fields[5]).toBe('ResolutionCode');
+                expect(fields[6]).toBe('Year');
+                expect(fields[7]).toBe('Month');
+                expect(fields[8]).toBe('Day');
+                expect(fields[9]).toBe('ActualTotalLoadByDayValue');
+            
+
+                // DATA ROWS OF CSV FILE
+                await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
+                for(var i=1; i<11; i++){
+                    let row = data[i];
+                    
+                    expect(row[0]).toBe('entso-e');
+                    expect(row[1]).toBe('ActualTotalLoad');
+                    expect(row[2]).toBe('Greece');
+                    expect(row[3]).toBe('CTY');
+                    expect(row[4]).toBe('GR');
+                    expect(row[5]).toBe('PT60M');
+                    expect(row[6]).toBe('2018');
+                    expect(row[7]).toBe('1');
+                    expect(row[8]).toBe((i).toString());
+                    
+                    // database
+                    // get the day group value from database
+                    let r = await ActualTotalLoad.aggregate([
+                        { $match: {"AreaName": 'Greece', "Year": 2018, "Month": 1, "Day": i, "ResolutionCodeId": 2} },
+                        
+                        { $group: { _id: {Year:"$Year",Month:"$Month",Day:"$Day"}, total: { $sum: "$TotalLoadValue" }, count: {$sum: 1} } },
+                        
+                        { $sort : { _id:1 } }
+        
+                    ]);               
+                    
+                    expect(r).not.toBe(null);
+                    expect(row[9]).toBe(r[0].total.toString());
+                
+                   
+                }
+                mongoose.disconnect();
+                done();
+             }catch(err){
+                 done(err);
+             }  
+
+            
+            }else return done(err);
+        })
+    });        
+    // ---------------------------------------------------------------------------------------------------------------------------
+
+
+
 
     // GET - 200 ok by simple user
     // ---------------------------------------------------------------------------------------------------------------------------
