@@ -49,7 +49,7 @@ exports.query = function(areaname, rescode, data_format, group, tokens, res, nex
                                 next(errors.NO_DATA);
                             }
                             else{
-                                responses.generateResponse(documents,data_format,responses_3a,'./files/DayAheadTotalLoadForecast/DayAheadTotalLoadForecast_3a.csv',{
+                                responses.generateResponse(documents,data_format,responses_3a,process.env.DOWNLOADS + '/DayAheadTotalLoadForecast/DayAheadTotalLoadForecast_3a.csv',{
                                     source: 'entso-e',
                                     dataset: 'DayAheadTotalLoadForecast',
                                     areaname: areaname,
@@ -80,7 +80,7 @@ exports.query = function(areaname, rescode, data_format, group, tokens, res, nex
                         ]).then(documents => {
                             if(documents.length === 0) next(errors.NO_DATA);
                             else{
-                                responses.generateResponse(documents,data_format,responses_3b,'./files/DayAheadTotalLoadForecast/DayAheadTotalLoadForecast_2b.csv',{
+                                responses.generateResponse(documents,data_format,responses_3b,process.env.DOWNLOADS + '/DayAheadTotalLoadForecast/DayAheadTotalLoadForecast_2b.csv',{
                                     source: 'entso-e',
                                     dataset: 'DayAheadTotalLoadForecast',
                                     areaname: areaname,
@@ -107,7 +107,7 @@ exports.query = function(areaname, rescode, data_format, group, tokens, res, nex
                         ]).then(documents => {
                             if(documents.length === 0) next(errors.NO_DATA);
                             else{
-                                responses.generateResponse(documents,data_format,responses_3c,'./files/DayAheadTotalLoadForecast/DayAheadTotalLoadForecast_3c.csv',{
+                                responses.generateResponse(documents,data_format,responses_3c,process.env.DOWNLOADS + '/DayAheadTotalLoadForecast/DayAheadTotalLoadForecast_3c.csv',{
                                     source: 'entso-e',
                                     dataset: 'DayAheadTotalLoadForecast',
                                     areaname: areaname,

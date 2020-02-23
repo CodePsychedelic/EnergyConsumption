@@ -32,7 +32,7 @@ module.exports = {
             {id: 'ResolutionCode', title: 'ResolutionCode'},
             {id: 'Year', title: 'Year'},
             {id: 'Month', title: 'Month'},
-            {id: 'DayAheadTotalLoadForecastByDayValue', title: 'DayAheadTotalLoadForecastByDayValue'},
+            {id: 'DayAheadTotalLoadForecastByMonthValue', title: 'DayAheadTotalLoadForecastByMonthValue'},
             
         
         ],
