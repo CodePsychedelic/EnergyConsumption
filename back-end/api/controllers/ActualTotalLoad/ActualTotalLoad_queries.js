@@ -113,7 +113,7 @@ exports.query = function (areaname, rescode, data_format, group, tokens, res, ne
                         ]).then(documents => {
                             if(documents.length === 0) next(errors.NO_DATA);
                             else{
-                                const path = './files/ActualTotalLoad/ActualTotalLoad_1c_' + n_fy + "-" + n_month + "-" + n_day + "-" + now.getMilliseconds() + ".csv";
+                                const path = process.env.DOWNLOADS + '/ActualTotalLoad/ActualTotalLoad_1c_' + n_fy + "-" + n_month + "-" + n_day + "-" + now.getMilliseconds() + ".csv";
                                 responses.generateResponse(documents,data_format,responses_1c,path,{
                                     source: 'entso-e',
                                     dataset: 'ActualTotalLoad',
