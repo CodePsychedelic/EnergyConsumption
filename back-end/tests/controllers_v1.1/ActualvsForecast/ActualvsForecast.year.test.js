@@ -33,7 +33,7 @@ describe('GET /energy/api/ActualvsForecast/../year/YYYY', () => {
         process.env.HOME = "/energy/api";
         process.env.JWT_KEY = "secret";
         process.env.MONGO_CONNECT = "mongodb://localhost:27017/softeng_test?readPreference=primary&appname=MongoDB%20Compass&ssl=false" 
-        process.env.DOWNLOADS = './tests/controllers_v1.1/';
+        process.env.DOWNLOADS = './tests/controllers_v1.1';
         try{
             mongoose.set('useCreateIndex', true);
             await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });

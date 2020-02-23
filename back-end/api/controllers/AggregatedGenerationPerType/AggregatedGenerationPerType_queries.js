@@ -84,7 +84,7 @@ exports.query = function (areaname, rescode, ptype, data_format, group, tokens, 
                             .then(documents => {
                                 if(documents.length === 0) next(errors.NO_DATA);
                                 else{
-                                    responses.generateResponse(documents,data_format,responses_2a,'./files/AggregatedGenerationPerType/AggregatedGenerationPerType_2a.csv',{
+                                    responses.generateResponse(documents,data_format,responses_2a,process.env.DOWNLOADS + '/AggregatedGenerationPerType/AggregatedGenerationPerType_2a.csv',{
                                         source: 'entso-e',
                                         dataset: 'AggregatedGenerationPerType',
                                         areaname: areaname,
@@ -115,7 +115,7 @@ exports.query = function (areaname, rescode, ptype, data_format, group, tokens, 
                                 ]).then(documents => {
                                     if(documents.length === 0) next(errors.NO_DATA);
                                     else{
-                                        responses.generateResponse(documents,data_format,responses_2b,'./files/AggregatedGenerationPerType/AggregatedGenerationPerType_2b.csv',{
+                                        responses.generateResponse(documents,data_format,responses_2b,process.env.DOWNLOADS + '/AggregatedGenerationPerType/AggregatedGenerationPerType_2b.csv',{
                                             source: 'entso-e',
                                             dataset: 'AggregatedGenerationPerType',
                                             areaname: areaname,
@@ -145,7 +145,7 @@ exports.query = function (areaname, rescode, ptype, data_format, group, tokens, 
                             ]).then(documents => {
                                 if(documents.length === 0) next(errors.NO_DATA);
                                 else{
-                                    responses.generateResponse(documents,data_format,responses_2c,'./files/AggregatedGenerationPerType/AggregatedGenerationPerType_2c.csv',{
+                                    responses.generateResponse(documents,data_format,responses_2c,process.env.DOWNLOADS + '/AggregatedGenerationPerType/AggregatedGenerationPerType_2c.csv',{
                                         source: 'entso-e',
                                         dataset: 'AggregatedGenerationPerType',
                                         areaname: areaname,

@@ -1,6 +1,7 @@
 const app = require('../../../../app') // Link to your server file
 const supertest = require('supertest')
 const request = supertest(app)
+const fs = require('fs');
 const qs = require('qs');
 
 // need mongoose and User model
@@ -8,6 +9,7 @@ const mongoose = require('mongoose');
 const User = require('../../../../api/models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const csvs = require('csv-string');
 
 
 const Blacklist = require('../../../../api/models/BlackListedToken');
@@ -29,7 +31,7 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/Solar/../date/YYYY-
         process.env.HOME = "/energy/api";
         process.env.JWT_KEY = "secret";
         process.env.MONGO_CONNECT = "mongodb://localhost:27017/softeng_test?readPreference=primary&appname=MongoDB%20Compass&ssl=false" 
-        
+        process.env.DOWNLOADS = './tests/controllers_v1.1';
         try{
             mongoose.set('useCreateIndex', true);
             await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
@@ -268,6 +270,83 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/Solar/../date/YYYY-
                 }
                 mongoose.disconnect();
                 done();
+            }else return done(err);
+        })
+    });        
+    // ---------------------------------------------------------------------------------------------------------------------------
+
+
+
+      // GET - 200 ok by admin (CSV RESPONSE)
+    // ---------------------------------------------------------------------------------------------------------------------------
+    it.only('Should create 200 - OK (ADMIN)', async done => {
+        request.get('/energy/api/AggregatedGenerationPerType/Greece/Solar/PT60M/date/2018-01-04?format=csv')
+        .set({'X_OBSERVATORY_AUTH':token})
+        .expect(200)
+        .end(async (err, res) => {
+            if(!err){
+
+                // check the file unlink feature
+                const files = fs.readdirSync(process.env.DOWNLOADS + '/AggregatedGenerationPerType');
+                expect(files.length).toBe(2);
+                
+
+                // check if response is of type text/csv
+                expect(res).toHaveProperty('type');
+                expect(res.type).toBe('text/csv');
+                
+                // if it is, parse the csv and check fields
+                try{
+                    let data = csvs.parse(res.text);
+                    expect(data.length).toBe(25);
+                    
+                    // HEADERS OF CSV FILE
+                    let fields = data[0];
+                    expect(fields[0]).toBe('Source');
+                    expect(fields[1]).toBe('Dataset');
+                    expect(fields[2]).toBe('AreaName');
+                    expect(fields[3]).toBe('AreaTypeCode');
+                    expect(fields[4]).toBe('MapCode');
+                    expect(fields[5]).toBe('ResolutionCode');
+                    expect(fields[6]).toBe('Year');
+                    expect(fields[7]).toBe('Month');
+                    expect(fields[8]).toBe('Day');
+                    expect(fields[9]).toBe('DateTimeUTC');
+                    expect(fields[10]).toBe('ProductionType');
+                    expect(fields[11]).toBe('ActualGenerationOutputValue');
+                    expect(fields[12]).toBe('UpdateTimeUTC');
+    
+
+                    // DATA ROWS OF CSV FILE
+                    await mongoose.connect(process.env.MONGO_CONNECT, { useNewUrlParser: true , useUnifiedTopology: true });
+                    let date = new Date('2018-01-03T22:00:00.000Z');
+                    for(var i=1; i<25; i++){
+                        let row = data[i];
+                        
+                        expect(row[0]).toBe('entso-e');
+                        expect(row[1]).toBe('AggregatedGenerationPerType');
+                        expect(row[2]).toBe('Greece');
+                        expect(row[3]).toBe('CTY');
+                        expect(row[4]).toBe('GR');
+                        expect(row[5]).toBe('PT60M');
+                        expect(row[6]).toBe('2018');
+                        expect(row[7]).toBe('1');
+                        expect(row[8]).toBe('4');
+                        expect(row[9]).toBe(date.toISOString());
+                        expect(row[10]).toBe('Solar');
+
+                        let r = await AggregatedGenerationPerType.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date, ProductionTypeId: 17});    // find the record in database                
+                        expect(r).not.toBe(null);                                                                           // should not be null
+                        expect(row[11]).toBe(r.ActualGenerationOutput.toString());             // and GenValues must agree
+                        expect(row[12]).toBe(r.UpdateTime.toISOString());
+
+                        date.setHours(date.getHours()+1);
+                    }
+                    mongoose.disconnect();
+                    done();
+                }catch(err){
+                    done(err);
+                }
             }else return done(err);
         })
     });        
