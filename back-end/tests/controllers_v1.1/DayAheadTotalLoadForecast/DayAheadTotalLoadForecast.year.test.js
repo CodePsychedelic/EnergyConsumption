@@ -270,7 +270,7 @@ describe('GET /energy/api/DayAheadTotalLoadForecast/../year/YYYY', () => {
 
        // GET - 200 ok by admin
     // ---------------------------------------------------------------------------------------------------------------------------
-    it.only('Should create 200 - OK (ADMIN)', async done => {
+    it('Should create 200 - OK (ADMIN)', async done => {
         request.get('/energy/api/DayAheadTotalLoadForecast/Greece/PT60M/year/2018?format=csv')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(200)
