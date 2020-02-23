@@ -272,7 +272,7 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/Solar/../year/YYYY'
 
     // GET - 200 ok by admin
     // ---------------------------------------------------------------------------------------------------------------------------
-    it.only('Should create 200 - OK (ADMIN)', async done => {
+    it('Should create 200 - OK (ADMIN)', async done => {
         request.get('/energy/api/AggregatedGenerationPerType/Greece/Solar/PT60M/year/2018?format=csv')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(200)
