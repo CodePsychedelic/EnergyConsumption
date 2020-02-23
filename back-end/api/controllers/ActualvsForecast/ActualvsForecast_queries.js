@@ -218,7 +218,7 @@ exports.query = function (areaname, rescode, data_format, group, tokens, res, ne
                                 return;
                             }
                             else{
-                                responses.generateResponse(documents,data_format,responses_4a,'./files/ActualvsForecast/ActualvsForecast_4a.csv',{
+                                responses.generateResponse(documents,data_format,responses_4a,process.env.DOWNLOADS + '/ActualvsForecast/ActualvsForecast_4a.csv',{
                                     source: 'entso-e',
                                     dataset: 'ActualVSForecastedTotalLoad',
                                     areaname: areaname,
@@ -246,7 +246,7 @@ exports.query = function (areaname, rescode, data_format, group, tokens, res, ne
                                 return;
                             }else{
                                 console.log(documents);
-                                responses.generateResponse(documents,data_format,responses_4b,'./files/ActualvsForecast/ActualvsForecast_4b.csv',{
+                                responses.generateResponse(documents,data_format,responses_4b,process.env.DOWNLOADS + '/ActualvsForecast/ActualvsForecast_4b.csv',{
                                     source: 'entso-e',
                                     dataset: 'ActualVSForecastedTotalLoad',
                                     areaname: areaname,
@@ -268,7 +268,7 @@ exports.query = function (areaname, rescode, data_format, group, tokens, res, ne
                         .then(documents => {    
                                 if(documents.length === 0) next(errors.NO_DATA);
                                 else{
-                                    responses.generateResponse(documents,data_format,responses_4c,'./files/ActualvsForecast/ActualvsForecast_4c.csv',{
+                                    responses.generateResponse(documents,data_format,responses_4c,process.env.DOWNLOADS + '/ActualvsForecast/ActualvsForecast_4c.csv',{
                                         source: 'entso-e',
                                         dataset: 'ActualVSForecastedTotalLoad',
                                         areaname: areaname,
