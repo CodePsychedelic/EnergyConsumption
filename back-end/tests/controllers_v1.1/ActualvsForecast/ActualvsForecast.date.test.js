@@ -288,7 +288,7 @@ describe('GET /energy/api/ActualvsForecast/../year/YYYY-MM-DD', () => {
             if(!err){
 
                 // check the file unlink feature
-                const files = fs.readdirSync(process.env.DOWNLOADS + '/ActualVSForecast');
+                const files = fs.readdirSync(process.env.DOWNLOADS + '/ActualvsForecast');
                 expect(files.length).toBe(3);
                 
 
