@@ -66,10 +66,15 @@ function help(){
                 
             }
             else if(arg === 'HealthCheck'){
-                await hcheck(cli);
-                console.log('test');
+                let response = undefined;
+                (process.env.RUN === 'TEST')? console.log('health'): response = await hcheck(cli);
+                
+                if(response !== undefined){
+                    console.log(response);
+                }
+                
             }else if(arg === 'Reset'){
-                reset(cli);
+                (process.env.RUN === 'TEST')? console.log('reset'):reset(cli);
             }
             else if(arg === 'Login'){
                 (process.env.RUN === 'TEST')? console.log('login'):login(cli);

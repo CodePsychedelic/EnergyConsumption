@@ -3,17 +3,17 @@ const axios = require('axios');
 
 
 exports.hcheck = async (cli) => {
-    await axios({
-        method: 'GET',
-        url: 'http://localhost:8765/energy/api/HealthCheck/',
-        headers: {}, 
-    })
-    .then(response => console.log(response.data))
-    .catch(err => {
-        console.log(err.code);
-        console.log(err.errno);
-        console.log(err.address);
-    });
+    try{
+        const response = await axios.get('http://localhost:8765/energy/api/HealthCheck/');
+        return response.data;
+    }catch(err){
+        return {
+            code: err.code,
+            no: err.errno,
+            adddress: err.address
+        };
+    }
+    
 };
 
 
