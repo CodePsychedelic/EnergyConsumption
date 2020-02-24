@@ -9,7 +9,11 @@ exports.hcheck = (cli) => {
         headers: {}, 
     })
     .then(response => console.log(response.data))
-    .catch(err => console.log(err.response.data));
+    .catch(err => {
+        console.log(err.code);
+        console.log(err.errno);
+        console.log(err.address);
+    });
 };
 
 
@@ -25,5 +29,9 @@ exports.reset = (cli) => {
         headers: {}, 
     })
     .then(response => console.log(response.data))
-    .catch(err => console.log(err.response.data));
+    .catch(err => {
+        console.log(err.code);
+        console.log(err.errno);
+        console.log(err.address);
+    });
 };

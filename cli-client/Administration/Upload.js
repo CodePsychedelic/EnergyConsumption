@@ -1,16 +1,16 @@
 const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
+const messages = require('../messages');
 
 exports.upload = (cli) => {
 if(cli.newdata !== 'ActualTotalLoad' && cli.newdata !== 'DayAheadTotalLoadForecast' && cli.newdata !== 'AggregatedGenerationPerType'){
-    console.log(cli.newdata);
-    console.log('Accepted values for --newdata: ActualTotalLoad | DayAheadTotalLoadForecast | AggregatedGenerationPerType');
+    console.log(messages.NEW_DATA_ERROR);
     return;
 }
 
 if(cli.source === undefined || cli.source.match(/\.csv$/) === null){
-    console.log('You need to define the source csv file correctly, using --source');
+    console.log(messages.SOURCE_ERROR);
     return;
 }
 
@@ -27,7 +27,7 @@ try{
     token = fs.readFileSync('./softeng19bAPI.token');
     token = token.toString();
 }catch(err){
-    console.log('No token found, please login');
+    console.log(messages.AUTH_ERROR);
     return;
 }
 
@@ -36,7 +36,7 @@ try{
     file = fs.createReadStream(path);
 }catch(err){
     //console.log(err);
-    console.log('The csv file speciffied, does not exist');
+    console.log(messages.FILE_NOT_FOUND);
     return;
 }
 
@@ -62,8 +62,12 @@ axios.post( 'http://localhost:8765/energy/api/Admin/' + cli.newdata,
     console.log(response.data);
 })
 .catch(err => {
-    if(err.response !== undefined) console.log(err.response.data);
-    else console.log(err);
+    if(err.response !== undefined) console.log(err.response.data)
+    else {
+        console.log(err.code);
+        console.log(err.errno);
+        console.log(err.address);
+    }
 });
 
 

@@ -50,7 +50,7 @@ node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Gr
 
 node energy_group035 SCOPE AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 //SCENARIO
 

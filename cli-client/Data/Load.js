@@ -1,9 +1,10 @@
 const axios = require('axios');
 const fs = require('fs');
+const messages = require('../messages');
 
 exports.load_query = async (cli, dataset) => {
     // --area and --timeres are required
-    if(cli.area === undefined || cli.timeres === undefined || (cli.date === undefined && cli.month === undefined && cli.year === undefined)) console.log('Required arguments are missing. We need --area, --timeres and grouping (--date || --month || --year)');
+    if(cli.area === undefined || cli.timeres === undefined || (cli.date === undefined && cli.month === undefined && cli.year === undefined)) console.log(messages.LOAD_REQ_ARGS);
     else{
         const areaname = cli.area;
         const rescode = cli.timeres;
@@ -13,9 +14,14 @@ exports.load_query = async (cli, dataset) => {
         
         // validation
         // -------------------------------------------------------------------------------
+        
+        if(areaname.includes('/')){
+            console.log(messages.INVALID_CHARACTERS);
+            return;
+        }
         // rescode validation
         if(rescode !== 'PT60M' && rescode !== 'PT30M' && rescode !== 'PT15M'){
-            console.log('Acceptable values for timeres: PT60M, PT30M, PT15M')
+            console.log(messages.TIMERES_ERROR);
             return;
         }
         console.log(date_str);
@@ -23,19 +29,20 @@ exports.load_query = async (cli, dataset) => {
         // date validation
         if(cli.date !== undefined && (date_str.match(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/) === null || date_str.length !== 10) ){
             // if date was given, it should match a pattern and have spessific len
-            console.log('Please enter a valid date YYYY-MM-DD');
+            console.log(messages.DATE_ERROR);
+            
             return;
         }else if(cli.month !== undefined && (date_str.match(/([12]\d{3}-(0[1-9]|1[0-2]))/) === null || date_str.length !== 7)){
-            console.log('Please enter a valid date-month YYYY-MM');
+            console.log(messages.MONTH_ERROR);
             return;
         }else if(cli.year !== undefined && (date_str.match(/([12]\d{3})/) === null || date_str.length !== 4)){
-            console.log('Please enter a valid year YYYY');
+            console.log(messages.YEAR_ERROR);
             return;
         }
 
 
         if(cli.format !== undefined && cli.format !== 'json' && cli.format !=='csv'){
-            console.log('Format should be either json or csv');
+            console.log(messages.FORMAT_ERROR);
             return;
         }
         // -------------------------------------------------------------------------------
@@ -54,7 +61,7 @@ exports.load_query = async (cli, dataset) => {
             token = fs.readFileSync('./softeng19bAPI.token');
             headers.x_observatory_auth = token.toString();
         }catch(err){
-            console.log("Waring: Requesting data, without being authenticated");
+            console.log(messages.AUTH_WARNING);
         }
 
         
@@ -62,7 +69,7 @@ exports.load_query = async (cli, dataset) => {
             url += '?format=' + cli.format;
         }
         // -------------------------------------------------------------------------------
-        console.log(url);
+    
         
         // finally the request
         // -------------------------------------------------------------------------------
@@ -73,7 +80,14 @@ exports.load_query = async (cli, dataset) => {
             data: {}
         })
         .then(response => console.log(response.data))
-        .catch(err => console.log(err.response.data));
+        .catch(err => {
+            if(err.response !== undefined) console.log(err.response.data)
+            else {
+                console.log(err.code);
+                console.log(err.errno);
+                console.log(err.address);
+            }
+        });
         // -------------------------------------------------------------------------------
 
         

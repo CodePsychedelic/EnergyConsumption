@@ -1,18 +1,25 @@
 const axios = require('axios');
 const fs = require('fs');
 const qs = require('qs');
+const messages = require('../messages');
+
 exports.new_user = (cli) => {
-    if(cli.passw === undefined || cli.email === undefined || cli.quota === undefined) console.log('Required parameters are missing. We need --passw, --email, --quota');
+    if(cli.passw === undefined || cli.email === undefined || cli.quota === undefined) console.log(messages.NEW_USER_PARAMS);
     else{
         // input validation
         // -------------------------------------------------------------------------------------------------
         if(cli.email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
-            console.log('Invalid email address');
+            console.log(messages.EMAIL_ERROR)
             return;
         }
 
         if(isNaN(cli.quota)){
-            console.log('Quota needs to be numeric');
+            console.log(messages.QUOTA_ERROR);
+            return;
+        }
+
+        if(cli.passw.length < 3){
+            console.log(messages.PASSWD_ERROR);
             return;
         }
         // -------------------------------------------------------------------------------------------------
@@ -26,7 +33,7 @@ exports.new_user = (cli) => {
             let data = fs.readFileSync('./softeng19bAPI.token');
             headers.x_observatory_auth = data.toString();
         }catch(err){
-            console.log('No token found, please login');
+            console.log(messages.AUTH_ERROR);
             return;
         }
         // -------------------------------------------------------------------------------------
@@ -45,7 +52,14 @@ exports.new_user = (cli) => {
             })
         })
         .then(response => console.log(response.data))
-        .catch(err => console.log(err.response.data));
+        .catch(err => {
+            if(err.response !== undefined) console.log(err.response.data)
+            else {
+                console.log(err.code);
+                console.log(err.errno);
+                console.log(err.address);
+            }
+        });
         // -------------------------------------------------------------------------------------
     }
 }

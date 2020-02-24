@@ -1,3 +1,13 @@
+function help(){
+    console.log('Usage: node energy_group035 SCOPE <arg> <options>');
+    console.log('<arg>: ActualTotalLoad | DayAheadTotalLoadForecast | AggregatedGenerationPerType | ActualvsForecast | Admin | Login | Logout | Reset | Healthcheck');
+    console.log('<options>(sets): timeres, area, date, prodtype(aggregated),format{optional}');
+    console.log('<options>(Admin): userstatus, newuser (email, passw, quota), moduser (email, passw, quota *), newdata (source)}');
+    console.log('<options>(Login): username, passw');
+    console.log('<options>(Reset): pop (optional)');
+    console.log('*: at least one');
+}
+
 const cli = require('commander');
 
 // administration handlers
@@ -26,12 +36,11 @@ cli
         if(arg === 'Admin') {
             // admin option handlers, if SCOPE === 'Admin'
             // ------------------------------------------------------------------------------------------------------
-            if(cli.userstatus) user_status(cli);    // --user status handler
+            if(cli.userstatus) user_status(cli);            // --user status handler
             else if(cli.newuser) new_user(cli);             // --newuser handler
             else if(cli.moduser) mod_user(cli);             // --moduser handler
-            else if(cli.newdata) {
-                upload(cli);
-            }
+            else if(cli.newdata) upload(cli);               // --newdata handler
+            
             // ------------------------------------------------------------------------------------------------------
         }
         else if(arg === 'ActualTotalLoad' || arg === 'DayAheadTotalLoadForecast' || arg === 'AggregatedGenerationPerType' || arg === 'ActualvsForecast'){
@@ -68,17 +77,14 @@ cli
         }
         else {
             // scope bad format --> exit(1)
-            console.log('Acceptable values for scope: ActualTotalLoad, AggregatedGenerationPerType, DayAheadTotalLoadForecast, ActualvsForecast');
-            return process.exit(1);
+            help();
         }
     });
 
 cli
     .command('*')
     .action(() => {
-        // acceptable commands -> exit(2)
-        console.log("Acceptable commands: SCOPE <dataset|Admin>");
-        return process.exit(2);
+        help();
     });
 
 // administration options
@@ -102,8 +108,6 @@ cli.option('-s, --userstatus <username>', 'Returns user status using <username>'
 // ----------------------------------------------------------------------------
 //.option('-d, --scope <dataset>', 'select dataset between ActualTotalLoad, AggregatedGenerationPerType, DayAheadTotalLoadForecast, ActualvsForecast')
 .option('-f, --format <format>', 'format to download (json or csv)')
-.option('-k, --apikey <key>', 'the api key needed to access data (required to view data)')
-
 .option('-c, --area <area>', 'distinct area for dataset (required)')
 .option('-t, --timeres <timere>', 'time resolution codes for dataset (required')
 .option('-w, --date <date>', 'full date YYYY-MM-DD for dataset')
@@ -118,4 +122,6 @@ cli.option('-s, --userstatus <username>', 'Returns user status using <username>'
 ;
 
 
-cli.parse(process.argv);
+let parse = cli.parse(process.argv);
+if(parse.args.length === 0) help();
+

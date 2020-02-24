@@ -1,6 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const qs = require('qs');
+const messages = require('../messages');
 
 exports.user_status = (cli) => {
     console.log(cli.userstatus);
@@ -13,7 +14,7 @@ exports.user_status = (cli) => {
         let data = fs.readFileSync('./softeng19bAPI.token');
         headers.x_observatory_auth = data.toString();
     }catch(err){
-        console.log('No token found, please login');
+        console.log(messages.AUTH_ERROR);
         return;
     }
     // -------------------------------------------------------------------------------------
@@ -26,6 +27,13 @@ exports.user_status = (cli) => {
         headers: headers, 
     })
     .then(response => console.log(response.data))
-    .catch(err => console.log(err.response.data));
+    .catch(err => {
+        if(err.response !== undefined) console.log(err.response.data)
+        else {
+            console.log(err.code);
+            console.log(err.errno);
+            console.log(err.address);
+        }
+    });
     // -------------------------------------------------------------------------------------
 }

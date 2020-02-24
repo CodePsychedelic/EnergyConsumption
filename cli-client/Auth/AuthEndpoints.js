@@ -1,13 +1,13 @@
 const axios = require('axios');
 const qs = require('qs');
 const fs = require('fs');
-
+const messages = require('../messages');
 exports.login = async(cli) => {
     const username = cli.username;
     const passw = cli.passw;
 
     if(username === undefined || passw === undefined){
-        console.log('Required arguments are missing. We need --username and --passw');
+        console.log(messages.LOGIN_PARAMS);
         return;
     }
 
@@ -42,8 +42,6 @@ exports.login = async(cli) => {
             })
         });
 
-        //console.log(login_response.data.token);
-        
         // save our token to ${HOME}/softeng19bAPI.token = ./softeng19bAPI.token
         fs.writeFile('./softeng19bAPI.token', login_response.data.token, err => {
             if(err) return console.log(err);
@@ -61,8 +59,8 @@ exports.login = async(cli) => {
         }else{
             // connection error
             console.log(err.code);
+            console.log(err.errno);
             console.log(err.address);
-            console.log(err.config);   
         }
     }
     // ======================================================================================
