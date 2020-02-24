@@ -2,8 +2,8 @@ const axios = require('axios');
 
 
 
-exports.hcheck = (cli) => {
-    axios({
+exports.hcheck = async (cli) => {
+    await axios({
         method: 'GET',
         url: 'http://localhost:8765/energy/api/HealthCheck/',
         headers: {}, 
