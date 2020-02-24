@@ -51,6 +51,8 @@ exports.login = async(cli) => {
             //console.log(err.response.data);
             if(err.response.data.additional !== undefined && err.response.data.additional.verified !== undefined){
                 return 'Token expires at: ' + new Date(err.response.data.additional.verified.exp * 1000)
+            }else{
+                return err.response.data;
             }
         }else{
             // connection error
