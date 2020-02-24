@@ -1,5 +1,5 @@
 const cli = require('./cli');
-
+const {setup} = require('./variables');
 
 
 function help(){
@@ -11,6 +11,9 @@ function help(){
     console.log('<options>(Reset): pop (optional)');
     console.log('*: at least one');
 }
+
+
+setup();
 
 let parse = cli.parse(process.argv);
 if(parse.args.length === 0) help();

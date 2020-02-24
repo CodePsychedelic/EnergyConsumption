@@ -68,19 +68,19 @@ function help(){
             else if(arg === 'HealthCheck'){
                 let response = undefined;
                 (process.env.RUN === 'TEST')? console.log('health'): response = await hcheck(cli);
-                
-                if(response !== undefined){
-                    console.log(response);
-                }
-                
+                if(response !== undefined) console.log(response);
             }else if(arg === 'Reset'){
                 (process.env.RUN === 'TEST')? console.log('reset'):reset(cli);
             }
             else if(arg === 'Login'){
-                (process.env.RUN === 'TEST')? console.log('login'):login(cli);
+                let response = undefined;
+                (process.env.RUN === 'TEST')? console.log('login'): response = await login(cli);
+                if(response !== undefined) console.log(response);
             }
             else if(arg === 'Logout'){
-                (process.env.RUN === 'TEST')? console.log('logout'):logout(cli);
+                let response = undefined;
+                (process.env.RUN === 'TEST')? console.log('logout'): response = await logout(cli);
+                if(response !== undefined) console.log(response);
             }
             else {
                 // scope bad format --> exit(1)
