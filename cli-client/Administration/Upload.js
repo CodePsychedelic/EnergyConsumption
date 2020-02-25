@@ -23,7 +23,7 @@ const path = './files/' + cli.source;
 // -------------------------------------------------------------------------------------
 let token = null;
 try{
-    token = fs.readFileSync('./softeng19bAPI.token');
+    token = fs.readFileSync(process.env.TOKEN);
     token = token.toString();
 }catch(err){
     return messages.AUTH_ERROR;

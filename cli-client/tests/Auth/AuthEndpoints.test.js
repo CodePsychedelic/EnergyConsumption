@@ -18,9 +18,14 @@ describe('Auth requests', () => {
 
 
     
+    afterEach(async function(done){
+        axios.post.mockReset();
+        done();
+    })
+
     // SUCCESSFUL LOGIN REQUEST
     // -----------------------------------------------------------------------------------------
-    it('Login - should create a token for the user', async (done) => {
+    it('Login - valid - should create a token for the user', async (done) => {
         
         // setup - post request that returns a token on success
         axios.post.mockImplementationOnce(() =>
@@ -35,16 +40,16 @@ describe('Auth requests', () => {
             passw:  '123'
         }
 
-        let url = 'http://localhost:8765/energy/api/Login';
-        let headers = {"headers": {"content-type": "application/x-www-form-urlencoded;charset=utf-8"}};
-        let info = qs.stringify(cli);
+        let url = 'http://localhost:8765/energy/api/Login';                                                 // url to post
+        let headers = {"headers": {"content-type": "application/x-www-form-urlencoded;charset=utf-8"}};     // non existent token
+        let info = qs.stringify(cli);                                                                       // append user info
 
-        const data = await login(cli);
-        console.log(data);
-        expect(axios.post).toHaveBeenCalledTimes(1);
-        expect(axios.post).toHaveBeenCalledWith(url, info, headers);
-        expect(data).toStrictEqual({token:"abcdef"});
+        const data = await login(cli);                                                                      // login
+        expect(data).toStrictEqual({token:"abcdef"});                                                       // expect token to be retrieved
+        expect(axios.post).toHaveBeenCalledTimes(1);                                                        // expect request to be mad
+        expect(axios.post).toHaveBeenCalledWith(url, info, headers);                                        // with correct parameters
         try{
+            // token file should be created, with correct token inside
             let fdata = fs.readFileSync(process.env.TOKEN);
             expect(fdata.toString()).toBe('abcdef');
         }catch(err){
@@ -57,7 +62,7 @@ describe('Auth requests', () => {
 
     // LOGIN - SECOND REQUEST - UNSUCCESSFUL
     // -----------------------------------------------------------------------------------------
-    it('Login - second login should fail, and inform the user for the token exp', async (done) => {
+    it('Login - Second Request - should fail, and inform the user for the token exp', async (done) => {
         
         // setup - post request that returns an error on double login
         // ---------------------------------------------------------
@@ -96,16 +101,16 @@ describe('Auth requests', () => {
             passw:  '123'
         }
 
-        let url = 'http://localhost:8765/energy/api/Login';
-        let headers = {"headers": {"content-type": "application/x-www-form-urlencoded;charset=utf-8", "x_observatory_auth": "abcdef"}};
-        let info = qs.stringify(cli);
+        let url = 'http://localhost:8765/energy/api/Login';                                                                                 // url
+        let headers = {"headers": {"content-type": "application/x-www-form-urlencoded;charset=utf-8", "x_observatory_auth": "abcdef"}};     // should contain the valid token
+        let info = qs.stringify(cli);                                                                                                       // user info
 
-        const data = await login(cli);
+        const data = await login(cli);                                                                                                      // login
         
+        expect(data).toBe('Token expires at: ' + new Date(exp * 1000));                                                                     // expect expire information
+        expect(axios.post).toHaveBeenCalledTimes(1);                                                                                        // expect a call
+        expect(axios.post).toHaveBeenCalledWith(url, info, headers);                                                                        // with correct parameters
         
-        expect(axios.post).toHaveBeenCalledTimes(2);
-        expect(axios.post).toHaveBeenCalledWith(url, info, headers);
-        expect(data).toBe('Token expires at: ' + new Date(exp * 1000));
         done();    
     });
     // -----------------------------------------------------------------------------------------
@@ -127,17 +132,18 @@ describe('Auth requests', () => {
         // ---------------------------------------------------------
    
 
-        let url = 'http://localhost:8765/energy/api/Logout';
-        let headers = {"headers": {"x_observatory_auth": "abcdef"}};
-
+        let url = 'http://localhost:8765/energy/api/Logout';            // url
+        let headers = {"headers": {"x_observatory_auth": "abcdef"}};    // should have the token @ headers
+        
         const data = await logout();
         
+        expect(data).toStrictEqual({});                                 // we expect empty response body
+        expect(axios.post).toHaveBeenCalledTimes(1);                    // we expect a call
+        expect(axios.post).toHaveBeenCalledWith(url, null, headers);    // with correct parameters
         
-        expect(axios.post).toHaveBeenCalledTimes(3);
-        expect(axios.post).toHaveBeenCalledWith(url, null, headers);
-        expect(data).toStrictEqual({});
 
         try{
+            // we expect token file to be removed
             fs.readFileSync(process.env.TOKEN);
             done('Token exists');   
         }catch(err){
@@ -151,7 +157,7 @@ describe('Auth requests', () => {
     // Wrong credentials
     // failed LOGIN REQUEST
     // -----------------------------------------------------------------------------------------
-    it('Login - should create an error message for wrong cred', async (done) => {
+    it('Login - WRONG CREDENTIALS - should create an error message for wrong cred', async (done) => {
         // error object for wrong credentials
         let error = {
             response:{
@@ -168,15 +174,25 @@ describe('Auth requests', () => {
             Promise.reject(error)
         );        
 
+
         // argument
         let cli = {
             username: 'user',
-            passw:  '123'
+            passw:  '12'
         }
 
+        let url = 'http://localhost:8765/energy/api/Login';                                                 // url
+        let headers = {"headers": {"content-type": "application/x-www-form-urlencoded;charset=utf-8"}};     // no token
+        let info = qs.stringify(cli);                                                                       // data
+
+    
+
         const data = await login(cli);
-        expect(axios.post).toHaveBeenCalledTimes(4);    // we do not expect a call on the post method for login
-        expect(data).toStrictEqual(error.response.data);
+
+        expect(data).toStrictEqual(error.response.data);                    // we do expect error response data for invalid credentials
+        expect(axios.post).toHaveBeenCalledTimes(1);                        // we do expect a call
+        expect(axios.post).toHaveBeenLastCalledWith(url, info, headers);    // with correct parameters
+    
         done();    
     });
     // -----------------------------------------------------------------------------------------
@@ -201,8 +217,11 @@ describe('Auth requests', () => {
         }
 
         const data = await login(cli);
-        expect(axios.post).toHaveBeenCalledTimes(4);    // we do not expect a call on the post method for login
         expect(data).toBe(messages.LOGIN_PARAMS);
+        expect(axios.post).toHaveBeenCalledTimes(0);    // we do not expect a call on the post method for login
+
+        await axios.post();                             // clear -> 5 calls
+
         done();    
     });
     // -----------------------------------------------------------------------------------------
@@ -225,9 +244,11 @@ describe('Auth requests', () => {
             username:  'user'
         }
 
+        
         const data = await login(cli);
-        expect(axios.post).toHaveBeenCalledTimes(4);    // we do not expect a call on the post method for login
-        expect(data).toBe(messages.LOGIN_PARAMS);
+        expect(data).toBe(messages.LOGIN_PARAMS);       // 
+        expect(axios.post).toHaveBeenCalledTimes(0);    // we do not expect a call on the post method for login
+        
         done();    
     });
     // -----------------------------------------------------------------------------------------

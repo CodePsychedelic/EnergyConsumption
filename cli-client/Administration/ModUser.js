@@ -31,7 +31,7 @@ exports.mod_user = async (cli) => {
         // -------------------------------------------------------------------------------------
         let headers = {'content-type': 'application/x-www-form-urlencoded;charset=utf-8'};
         try{
-            let data = fs.readFileSync('./softeng19bAPI.token');
+            let data = fs.readFileSync(process.env.TOKEN);
             headers.x_observatory_auth = data.toString();
         }catch(err){
             return messages.AUTH_ERROR;

@@ -14,6 +14,7 @@ describe('HealthCheck request', () => {
     })
 
     afterEach(function(done){
+        axios.get.mockReset();
         done();
     });
 
@@ -39,12 +40,14 @@ describe('HealthCheck request', () => {
     it('HealthCheck - connection error', async (done) => {
         
         // setup - reject request
-        let errorMessage = { code: 'ECONNREFUSED', errno: 'ECONNREFUSED', address: '127.0.0.1' }
+        let error = { code: 'ECONNREFUSED', errno: 'ECONNREFUSED', address: '127.0.0.1' }
         axios.get.mockImplementationOnce(() =>
-            Promise.reject(errorMessage),
+            Promise.reject(error),
         );
         const data = await hcheck();
-        console.log(data);
+        expect(data).toStrictEqual({code: error.code, no: error.errno, address: error.address});
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(axios.get).toHaveBeenCalledWith('http://localhost:8765/energy/api/HealthCheck/');
         done();    
     });
 

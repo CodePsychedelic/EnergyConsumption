@@ -10,7 +10,7 @@ exports.hcheck = async (cli) => {
         return {
             code: err.code,
             no: err.errno,
-            adddress: err.address
+            address: err.address
         };
     }
     
