@@ -148,6 +148,39 @@ describe('Auth requests', () => {
     });
     // -----------------------------------------------------------------------------------------
 
+    // Wrong credentials
+    // failed LOGIN REQUEST
+    // -----------------------------------------------------------------------------------------
+    it('Login - should create an error message for wrong cred', async (done) => {
+        // error object for wrong credentials
+        let error = {
+            response:{
+                    data:{
+                        status: 401,
+                        message: "Not authorized",
+                        additional: "Username or password error" 
+                    }
+                }
+            };
+
+        // setup - post request that returns an empty response body
+        axios.post.mockImplementationOnce(() =>
+            Promise.reject(error)
+        );        
+
+        // argument
+        let cli = {
+            username: 'user',
+            passw:  '123'
+        }
+
+        const data = await login(cli);
+        expect(axios.post).toHaveBeenCalledTimes(4);    // we do not expect a call on the post method for login
+        expect(data).toStrictEqual(error.response.data);
+        done();    
+    });
+    // -----------------------------------------------------------------------------------------
+    
     
     // MISSING username parameter
     // failed LOGIN REQUEST
@@ -168,7 +201,7 @@ describe('Auth requests', () => {
         }
 
         const data = await login(cli);
-        expect(axios.post).toHaveBeenCalledTimes(3);    // we do not expect a call on the post method for login
+        expect(axios.post).toHaveBeenCalledTimes(4);    // we do not expect a call on the post method for login
         expect(data).toBe(messages.LOGIN_PARAMS);
         done();    
     });
@@ -193,7 +226,7 @@ describe('Auth requests', () => {
         }
 
         const data = await login(cli);
-        expect(axios.post).toHaveBeenCalledTimes(3);    // we do not expect a call on the post method for login
+        expect(axios.post).toHaveBeenCalledTimes(4);    // we do not expect a call on the post method for login
         expect(data).toBe(messages.LOGIN_PARAMS);
         done();    
     });
