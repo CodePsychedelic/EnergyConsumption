@@ -3,7 +3,7 @@ const fs = require('fs');
 const qs = require('qs');
 const messages = require('../messages');
 
-exports.user_status = (cli) => {
+exports.user_status = async (cli) => {
     console.log(cli.userstatus);
     
     // set up the headers. Check if token already exists.
@@ -11,29 +11,29 @@ exports.user_status = (cli) => {
     // -------------------------------------------------------------------------------------
     let headers = {'content-type': 'application/x-www-form-urlencoded;charset=utf-8'};
     try{
-        let data = fs.readFileSync('./softeng19bAPI.token');
+        let data = fs.readFileSync(process.env.TOKEN);
         headers.x_observatory_auth = data.toString();
     }catch(err){
         console.log(messages.AUTH_ERROR);
         return;
     }
     // -------------------------------------------------------------------------------------
-
+    
     // user status request
     // -------------------------------------------------------------------------------------
-    axios({
-        method: 'GET',
-        url: 'http://localhost:8765/energy/api/Admin/users/' + cli.userstatus,
-        headers: headers, 
-    })
-    .then(response => console.log(response.data))
-    .catch(err => {
-        if(err.response !== undefined) console.log(err.response.data)
+    try{
+        let response = await axios.get('http://localhost:8765/energy/api/Admin/users/'+cli.userstatus, {headers:headers})
+        return response.data;
+    }catch(err){
+        if(err.response !== undefined) return err.response.data;
         else {
-            console.log(err.code);
-            console.log(err.errno);
-            console.log(err.address);
+            return {
+                code: err.code,
+                no: err.errno,
+                address: err.address
+            }
         }
-    });
+    }
+    
     // -------------------------------------------------------------------------------------
 }

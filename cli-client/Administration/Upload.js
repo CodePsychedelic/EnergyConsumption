@@ -3,7 +3,7 @@ const fs = require('fs');
 const FormData = require('form-data');
 const messages = require('../messages');
 
-exports.upload = (cli) => {
+exports.upload = async (cli) => {
 if(cli.newdata !== 'ActualTotalLoad' && cli.newdata !== 'DayAheadTotalLoadForecast' && cli.newdata !== 'AggregatedGenerationPerType'){
     console.log(messages.NEW_DATA_ERROR);
     return;
@@ -54,11 +54,24 @@ headers.x_observatory_auth = token;
 console.log(headers);
 
 
+try{
+    let response = await axios.post( 'http://localhost:8765/energy/api/Admin/' + cli.newdata,
+        fdata,
+        {headers:headers, maxContentLength: Infinity, maxBodyLength: Infinity}
+    )
+    return response.data;
+}catch(err){
+    if(err.response !== undefined) return err.response.data;
+    else{
+        return {
+            code: err.code,
+            no: err.errno,
+            address: err.address
+        };
+    }
+}
 
-axios.post( 'http://localhost:8765/energy/api/Admin/' + cli.newdata,
-    fdata,
-    {headers:headers, maxContentLength: Infinity, maxBodyLength: Infinity}
-).then((response) => {
+/*.then((response) => {
     console.log(response.data);
 })
 .catch(err => {
@@ -68,7 +81,9 @@ axios.post( 'http://localhost:8765/energy/api/Admin/' + cli.newdata,
         console.log(err.errno);
         console.log(err.address);
     }
-});
+});*/
+
+
 
 
 
