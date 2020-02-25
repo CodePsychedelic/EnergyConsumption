@@ -7,7 +7,7 @@ const messages = require('../messages');
 // http://localhost:8765/energy/api/AggregatedGenerationPerType/Greece/AllTypes/PT60M/2018/1/4
 exports.gen_query = async (cli) => {
     // --area and --timeres are required
-    if(cli.area === undefined || cli.prodtype === undefined || cli.timeres === undefined || (cli.date === undefined && cli.month === undefined && cli.year === undefined)) console.log(messages.AGGR_REQ_ARGS);
+    if(cli.area === undefined || cli.prodtype === undefined || cli.timeres === undefined || (cli.date === undefined && cli.month === undefined && cli.year === undefined)) return messages.AGGR_REQ_ARGS;
     else{
         const areaname = cli.area;
         const prodtype = cli.prodtype;
@@ -19,18 +19,15 @@ exports.gen_query = async (cli) => {
         // -------------------------------------------------------------------------------
         
         if(areaname.includes('/')){
-            console.log(messages.INVALID_CHARACTERS);
-            return;
+            return messages.INVALID_CHARACTERS;
         }
         if(prodtype.includes('/')){
-            console.log(messages.INVALID_CHARACTERS);
-            return;
+            return messages.INVALID_CHARACTERS;
         }
         
         // rescode validation
         if(rescode !== 'PT60M' && rescode !== 'PT30M' && rescode !== 'PT15M'){
-            console.log(messages.TIMERES_ERROR);
-            return;
+            return messages.TIMERES_ERROR;
         }
         
         
@@ -38,20 +35,17 @@ exports.gen_query = async (cli) => {
         // date validation
         if(cli.date !== undefined && (date_str.match(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/) === null || date_str.length !== 10) ){
             // if date was given, it should match a pattern and have spessific len
-            console.log(messages.DATE_ERROR);
-            return;
+            return messages.DATE_ERROR;
+            
         }else if(cli.month !== undefined && (date_str.match(/([12]\d{3}-(0[1-9]|1[0-2]))/) === null || date_str.length !== 7)){
-            console.log(messages.MONTH_ERROR);
-            return;
+            return messages.MONTH_ERROR;
         }else if(cli.year !== undefined && (date_str.match(/([12]\d{3})/) === null || date_str.length !== 4)){
-            console.log(messages.YEAR_ERROR);
-            return;
+            return messages.YEAR_ERROR;
         }
 
 
         if(cli.format !== undefined && cli.format !== 'json' && cli.format !=='csv'){
-            console.log(messages.FORMAT_ERROR);
-            return;
+            return messages.FORMAT_ERROR;
         }
         // -------------------------------------------------------------------------------
         
@@ -79,21 +73,22 @@ exports.gen_query = async (cli) => {
         }
         // -------------------------------------------------------------------------------
         
-        axios({
-            method: 'get',
-            url: url,
-            headers: headers, 
-            data: {}
-        })
-        .then(response => console.log(response.data))
-        .catch(err => {
-            if(err.response !== undefined) console.log(err.response.data)
+         // finally the request
+        // -------------------------------------------------------------------------------
+        try{
+            let response = await axios.get(url,{headers: headers});
+            return response.data;
+        }catch(err){
+            if(err.response !== undefined) return err.response.data;
             else {
-                console.log(err.code);
-                console.log(err.errno);
-                console.log(err.address);
+                return {
+                    code: err.code,
+                    no: err.errno,
+                    address: err.address
+                };
             }
-        });
+        }
+        
         
 
         

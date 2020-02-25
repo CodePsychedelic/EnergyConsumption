@@ -50,24 +50,26 @@ function help(){
                 // ------------------------------------------------------------------------------------------------------
             }
             else if(arg === 'ActualTotalLoad' || arg === 'DayAheadTotalLoadForecast' || arg === 'AggregatedGenerationPerType' || arg === 'ActualvsForecast'){
-                
+                let response = undefined;
                 // data option handlers if scope === ...(file)
                 // ------------------------------------------------------------------------------------------------------
                 switch(arg){
                     case 'ActualTotalLoad':
-                        (process.env.RUN === 'TEST')? console.log('Actual'):load_query(cli,'ActualTotalLoad');
+                        (process.env.RUN === 'TEST')? console.log('Actual'): response = await load_query(cli,'ActualTotalLoad');
                         break;
                     case 'AggregatedGenerationPerType':
-                        (process.env.RUN === 'TEST')? console.log('Aggregated'):gen_query(cli);
+                        (process.env.RUN === 'TEST')? console.log('Aggregated'):response = await gen_query(cli);
                         break;
                     case 'DayAheadTotalLoadForecast':
-                        (process.env.RUN === 'TEST')? console.log('DayAhead'):load_query(cli,'DayAheadTotalLoadForecast');
+                        (process.env.RUN === 'TEST')? console.log('DayAhead'): response = await load_query(cli,'DayAheadTotalLoadForecast');
                         break;
                     case 'ActualvsForecast':
-                        (process.env.RUN === 'TEST')? console.log('ActualvsForecast'):load_query(cli,'ActualvsForecast');
+                        (process.env.RUN === 'TEST')? console.log('ActualvsForecast'): response = await load_query(cli,'ActualvsForecast');
                         break;
                 }
                 // ------------------------------------------------------------------------------------------------------
+
+                if(response !== undefined) console.log(response);
                 
             }
             else if(arg === 'HealthCheck'){
