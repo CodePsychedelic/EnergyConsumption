@@ -42,8 +42,8 @@ function help(){
                 // ------------------------------------------------------------------------------------------------------
                 if(cli.userstatus) (process.env.RUN === 'TEST')? console.log('userstatus'): response = await user_status(cli);            // --user status handler
                 
-                else if(cli.newuser) (process.env.RUN === 'TEST')? console.log('newuser'):new_user(cli);             // --newuser handler
-                else if(cli.moduser) (process.env.RUN === 'TEST')? console.log('moduser'):mod_user(cli);             // --moduser handler
+                else if(cli.newuser) (process.env.RUN === 'TEST')? console.log('newuser'):response = await new_user(cli);             // --newuser handler
+                else if(cli.moduser) (process.env.RUN === 'TEST')? console.log('moduser'):response = await mod_user(cli);             // --moduser handler
                 else if(cli.newdata) (process.env.RUN === 'TEST')? console.log('upload'): response = await upload(cli);               // --newdata handler
                 
                 if(response !== undefined) console.log(response);

@@ -4,7 +4,6 @@ const qs = require('qs');
 const messages = require('../messages');
 
 exports.user_status = async (cli) => {
-    console.log(cli.userstatus);
     
     // set up the headers. Check if token already exists.
     // If it exists, append it as x_observatory_auth
@@ -14,8 +13,8 @@ exports.user_status = async (cli) => {
         let data = fs.readFileSync(process.env.TOKEN);
         headers.x_observatory_auth = data.toString();
     }catch(err){
-        console.log(messages.AUTH_ERROR);
-        return;
+        return messages.AUTH_ERROR;
+        
     }
     // -------------------------------------------------------------------------------------
     

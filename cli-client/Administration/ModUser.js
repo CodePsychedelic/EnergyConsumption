@@ -3,25 +3,22 @@ const fs = require('fs');
 const qs = require('qs');
 const messages = require('../messages');
 
-exports.mod_user = (cli) => {
+exports.mod_user = async (cli) => {
     if(cli.passw === undefined && cli.email === undefined && cli.quota === undefined) console.log(messages.MOD_PARAMS);
     else{
 
         // input validation
         // -------------------------------------------------------------------------------------------------
         if(cli.email !== undefined && cli.email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
-            console.log(messages.EMAIL_ERROR);
-            return;
+            return messages.EMAIL_ERROR;
         }
 
         if(cli.quota !== undefined && isNaN(cli.quota)){
-            console.log(messages.QUOTA_ERROR);
-            return;
+            return messages.QUOTA_ERROR;
         }
 
         if(cli.passw !== undefined && cli.passw.length < 3){
-            console.log(messages.PASSWD_ERROR);
-            return;
+            return messages.PASSWD_ERROR;
         }
         // -------------------------------------------------------------------------------------------------
 
@@ -37,8 +34,7 @@ exports.mod_user = (cli) => {
             let data = fs.readFileSync('./softeng19bAPI.token');
             headers.x_observatory_auth = data.toString();
         }catch(err){
-            console.log(messages.AUTH_ERROR);
-            return;
+            return messages.AUTH_ERROR;
         }
         // -------------------------------------------------------------------------------------
 
@@ -47,6 +43,25 @@ exports.mod_user = (cli) => {
         if(cli.email !== undefined) updateOps['email'] = cli.email;
         if(cli.quota !== undefined) updateOps['quota'] = cli.quota;
     
+
+        try{
+            let response = await axios.put(
+                'http://localhost:8765/energy/api/Admin/users/' + cli.moduser,
+                qs.stringify(updateOps),
+                {headers: headers}
+            )
+            return response.data;
+        }catch(err){
+            if(err.response !== undefined) return err.response.data;
+            else {
+                return{
+                    code: err.code,
+                    no: err.no,
+                    address: err.address
+                };
+            }
+        }
+/*
         axios({
             method: 'put',
             url: 'http://localhost:8765/energy/api/Admin/users/' + cli.moduser,
@@ -62,5 +77,6 @@ exports.mod_user = (cli) => {
                 console.log(err.address);
             }
         });
+        */
     }
 }

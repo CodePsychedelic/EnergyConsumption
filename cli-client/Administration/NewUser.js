@@ -3,24 +3,21 @@ const fs = require('fs');
 const qs = require('qs');
 const messages = require('../messages');
 
-exports.new_user = (cli) => {
+exports.new_user = async(cli) => {
     if(cli.passw === undefined || cli.email === undefined || cli.quota === undefined) console.log(messages.NEW_USER_PARAMS);
     else{
         // input validation
         // -------------------------------------------------------------------------------------------------
         if(cli.email.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/) === null){
-            console.log(messages.EMAIL_ERROR)
-            return;
+            return messages.EMAIL_ERROR
         }
 
         if(isNaN(cli.quota)){
-            console.log(messages.QUOTA_ERROR);
-            return;
+            return messages.QUOTA_ERROR;
         }
 
         if(cli.passw.length < 3){
-            console.log(messages.PASSWD_ERROR);
-            return;
+            return messages.PASSWD_ERROR;
         }
         // -------------------------------------------------------------------------------------------------
 
@@ -33,33 +30,36 @@ exports.new_user = (cli) => {
             let data = fs.readFileSync('./softeng19bAPI.token');
             headers.x_observatory_auth = data.toString();
         }catch(err){
-            console.log(messages.AUTH_ERROR);
-            return;
+            return messages.AUTH_ERROR;
         }
         // -------------------------------------------------------------------------------------
 
         // request for add user
         // -------------------------------------------------------------------------------------
-        axios({
-            method: 'post',
-            url: 'http://localhost:8765/energy/api/Admin/users',
-            headers: headers, 
-            data: qs.stringify({
-                "username": cli.newuser,
-                "passwd": cli.passw,
-                "email": cli.email,
-                "quota": Number(cli.quota)
-            })
-        })
-        .then(response => console.log(response.data))
-        .catch(err => {
-            if(err.response !== undefined) console.log(err.response.data)
+        
+        try{
+            let response = await axios.post(
+                'http://localhost:8765/energy/api/Admin/users',
+                qs.stringify({
+                    "username": cli.newuser,
+                    "passwd": cli.passw,
+                    "email": cli.email,
+                    "quota": Number(cli.quota)
+                }),
+                {headers: headers}
+            );
+            return response.data;
+        }catch(err){
+            if(err.response !== undefined) return err.response.data;
             else {
-                console.log(err.code);
-                console.log(err.errno);
-                console.log(err.address);
+                return {
+                    code: err.code,
+                    no: err.errno,
+                    address: err.address
+                };
             }
-        });
+        }
+
         // -------------------------------------------------------------------------------------
     }
 }

@@ -5,13 +5,12 @@ const messages = require('../messages');
 
 exports.upload = async (cli) => {
 if(cli.newdata !== 'ActualTotalLoad' && cli.newdata !== 'DayAheadTotalLoadForecast' && cli.newdata !== 'AggregatedGenerationPerType'){
-    console.log(messages.NEW_DATA_ERROR);
-    return;
+    return messages.NEW_DATA_ERROR;
+    
 }
 
 if(cli.source === undefined || cli.source.match(/\.csv$/) === null){
-    console.log(messages.SOURCE_ERROR);
-    return;
+    return messages.SOURCE_ERROR;
 }
 
 
@@ -27,17 +26,15 @@ try{
     token = fs.readFileSync('./softeng19bAPI.token');
     token = token.toString();
 }catch(err){
-    console.log(messages.AUTH_ERROR);
-    return;
+    return messages.AUTH_ERROR;
+    
 }
 
 let file = null;
 try{
     file = fs.createReadStream(path);
 }catch(err){
-    //console.log(err);
-    console.log(messages.FILE_NOT_FOUND);
-    return;
+    return messages.FILE_NOT_FOUND;
 }
 
 // http://localhost:8765/energy/api/Admin/ActualTotalLoad
