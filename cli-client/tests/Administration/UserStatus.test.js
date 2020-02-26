@@ -11,7 +11,7 @@ jest.mock('axios');
 
 describe('Admin requests', () => {
 
-    beforeAll(function(done){
+    beforeEach(function(done){
         setup();
         done();
     });
@@ -22,7 +22,8 @@ describe('Admin requests', () => {
     })
         
     
-    
+    // SUCCESS
+    // ##############################################################################################################################
     // SUCCESSFUL USERSTATUS
     // -----------------------------------------------------------------------------------------
     it('User status - Existing User reply - It should do a successful request and get user status', async (done) => {
@@ -51,7 +52,10 @@ describe('Admin requests', () => {
         done();    
     });
     // -----------------------------------------------------------------------------------------
+    // ##############################################################################################################################
 
+    // ERROR RESPONSE
+    // ##############################################################################################################################
     // NON EXISTING USER STATUS
     // -----------------------------------------------------------------------------------------
     it('User status - Non Existing reply - Should perform the request, and return the error response', async (done) => {
@@ -89,6 +93,7 @@ describe('Admin requests', () => {
         done();    
     });
     // -----------------------------------------------------------------------------------------
+    
 
     // INVALID TOKEN
     // -----------------------------------------------------------------------------------------
@@ -127,12 +132,14 @@ describe('Admin requests', () => {
         done();    
     });
     // -----------------------------------------------------------------------------------------
+    // ##############################################################################################################################
 
-
+    // VALIDATION
+    // ##############################################################################################################################
     // Non existing token
     // -----------------------------------------------------------------------------------------
     it('User status - Non existing token - Should not make the request, and should inform', async (done) => {
-        process.env.TOKEN = './tests/Administration/non_existing.token';
+        process.env.TOKEN = './tests/Administration/non_existing.token';    // alter token - path non existing
         
         // setup - get
         axios.get.mockImplementationOnce(() =>
@@ -154,11 +161,13 @@ describe('Admin requests', () => {
         done();    
     });
     // -----------------------------------------------------------------------------------------
+    // ##############################################################################################################################
 
+    
     // Server off - connection error
+    // ##############################################################################################################################
     // -----------------------------------------------------------------------------------------
     it('User status - Server off/Connection err - Should not make the request, and should inform', async (done) => {
-        process.env.TOKEN = './tests/Administration/dummy.token';
         let error = {
             code: 'ECONNREFUSED', errno: 'ECONNREFUSED', address: '127.0.0.1' 
         };

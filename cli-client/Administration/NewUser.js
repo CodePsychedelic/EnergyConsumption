@@ -4,7 +4,7 @@ const qs = require('qs');
 const messages = require('../messages');
 
 exports.new_user = async(cli) => {
-    if(cli.passw === undefined || cli.email === undefined || cli.quota === undefined) console.log(messages.NEW_USER_PARAMS);
+    if(cli.passw === undefined || cli.email === undefined || cli.quota === undefined) return messages.NEW_USER_PARAMS;
     else{
         // input validation
         // -------------------------------------------------------------------------------------------------

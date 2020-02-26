@@ -4,7 +4,7 @@ const qs = require('qs');
 const messages = require('../messages');
 
 exports.mod_user = async (cli) => {
-    if(cli.passw === undefined && cli.email === undefined && cli.quota === undefined) console.log(messages.MOD_PARAMS);
+    if(cli.passw === undefined && cli.email === undefined && cli.quota === undefined) return messages.MOD_PARAMS;
     else{
 
         // input validation
@@ -56,7 +56,7 @@ exports.mod_user = async (cli) => {
             else {
                 return{
                     code: err.code,
-                    no: err.no,
+                    no: err.errno,
                     address: err.address
                 };
             }

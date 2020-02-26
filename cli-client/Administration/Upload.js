@@ -14,7 +14,7 @@ if(cli.source === undefined || cli.source.match(/\.csv$/) === null){
 }
 
 
-const path = './files/' + cli.source;
+const path = process.env.FILES + cli.source;
 
 
 
@@ -32,12 +32,14 @@ try{
 
 let file = null;
 try{
-    file = fs.createReadStream(path);
+    fs.readFileSync(path);              // check if file exists
+    file = fs.createReadStream(path);   // if yes, create readsteam
+    
 }catch(err){
-    return messages.FILE_NOT_FOUND;
+    return messages.FILE_NOT_FOUND;     // else return the FNF error msg
 }
+console.log('File to upload: ' + path);
 
-// http://localhost:8765/energy/api/Admin/ActualTotalLoad
 
 let fdata = new FormData();
 
