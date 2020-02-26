@@ -17,7 +17,7 @@ module.exports = {
     AUTH_ERROR: 'No token found, please login',
     MOD_PARAMS: 'Required parameters are missing. Atleast one of --passw, --email, --quota is needed',
     NEW_USER_PARAMS: 'Required parameters are missing. Parameters needed: --passw, --email, --quota',
-
+    NO_TOKEN_FOUND: 'No token found',
 
     NEW_DATA_ERROR: 'Accepted values for --newdata: ActualTotalLoad | DayAheadTotalLoadForecast | AggregatedGenerationPerType',
     SOURCE_ERROR: 'You need to define the source csv file correctly, using --source',

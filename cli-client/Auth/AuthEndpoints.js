@@ -59,7 +59,7 @@ exports.login = async(cli) => {
             return {
                 code: err.code,
                 no: err.errno,
-                adddress: err.address
+                address: err.address
             };
         }
     }
@@ -67,37 +67,6 @@ exports.login = async(cli) => {
 
 }
 
-/*
-exports.logout = async(cli) => {
-
-
-    // check if file exists, and read its data. (the token)
-    // logout request with the token (header) --> blacklist the token
-    // unlink the file --> delete the token file    
-    // ======================================================================================
-    let headers = {};
-    try{
-        let data = fs.readFileSync(process.env.TOKEN);
-        headers.x_observatory_auth = data.toString();
-        
-        // actual request
-        logout_response = await axios({
-            method: 'POST',
-            url: 'http://localhost:8765/energy/api/Logout',
-            headers: headers
-        });
-        console.log(logout_response.data);
-        fs.unlinkSync(process.env.TOKEN);
-        return;
-    }catch(err){
-        console.log('No token found');
-        return;
-    }
-    // ======================================================================================
-
-    
-}
-*/
 
 exports.logout = async() => {
 
@@ -122,12 +91,12 @@ exports.logout = async() => {
             return err.response.data;
             
         }else{
-            if(err.address === undefined) return 'Token not found';
+            if(err.address === undefined) return messages.NO_TOKEN_FOUND;
             else{
                 return {
                     code: err.code,
                     no: err.errno,
-                    adddress: err.address
+                    address: err.address
                 };
             }
         }
