@@ -25,7 +25,7 @@ describe('CLI parser test', () => {
     // ------------------------------------------------------------------------------------
     it('HealthCheck should log "health"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','HealthCheck']);
+        cli.parse(['exe','file','HealthCheck']);
         
         expect(outputData).toBe('health');
        
@@ -34,7 +34,7 @@ describe('CLI parser test', () => {
     
     it('Reset should log "reset"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','Reset']);
+        cli.parse(['exe','file','Reset']);
         
         expect(outputData).toBe('reset');
        
@@ -44,7 +44,7 @@ describe('CLI parser test', () => {
     // SCOPE = LOGIN | LOGOUT
     it('Login should log "login"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','Login']);
+        cli.parse(['exe','file','Login']);
         
         expect(outputData).toBe('login');
        
@@ -53,7 +53,7 @@ describe('CLI parser test', () => {
 
     it('Logout should log "logout"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','Logout']);
+        cli.parse(['exe','file','Logout']);
         
         expect(outputData).toBe('logout');
        
@@ -65,7 +65,7 @@ describe('CLI parser test', () => {
     // ------------------------------------------------------------------------------------
     it('Admin - newuser should log "newuser"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','Admin','--newuser','xxx']);
+        cli.parse(['exe','file','Admin','--newuser','xxx']);
         
         expect(outputData).toBe('newuser');
 
@@ -76,7 +76,7 @@ describe('CLI parser test', () => {
 
     it('Admin - moduser should log "moduser"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','Admin','--moduser','xxx']);
+        cli.parse(['exe','file','Admin','--moduser','xxx']);
         
         expect(outputData).toBe('moduser');
        
@@ -88,7 +88,7 @@ describe('CLI parser test', () => {
 
     it('Admin - newdata should log "upload"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','Admin','--newdata','xxx']);
+        cli.parse(['exe','file','Admin','--newdata','xxx']);
         
         expect(outputData).toBe('upload');
 
@@ -100,7 +100,7 @@ describe('CLI parser test', () => {
     // SCOPE = LOAD
     it('ActualTotalLoad - should log "Actual"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','ActualTotalLoad']);
+        cli.parse(['exe','file','ActualTotalLoad']);
         
         expect(outputData).toBe('Actual');
 
@@ -109,7 +109,7 @@ describe('CLI parser test', () => {
 
     it('DayAheadTotalLoadForecast - should log "DayAhead"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','DayAheadTotalLoadForecast']);
+        cli.parse(['exe','file','DayAheadTotalLoadForecast']);
         
         expect(outputData).toBe('DayAhead');
 
@@ -118,7 +118,7 @@ describe('CLI parser test', () => {
 
     it('ActualvsForecast - should log "ActualvsForecast"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','ActualvsForecast']);
+        cli.parse(['exe','file','ActualvsForecast']);
         
         expect(outputData).toBe('ActualvsForecast');
 
@@ -129,7 +129,7 @@ describe('CLI parser test', () => {
     // SCOPE = Aggregated
     it('AggregatedGenerationPerType - should log "Aggregated"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','AggregatedGenerationPerType']);
+        cli.parse(['exe','file','AggregatedGenerationPerType']);
         
         expect(outputData).toBe('Aggregated');
 
@@ -141,7 +141,7 @@ describe('CLI parser test', () => {
     // SCOPE = Unknown command
     it('Unknown command - should log "USAGE MESSAGE"', async (done) => {
         
-        cli.parse(['exe','file','SCOPE','ASDF']);
+        cli.parse(['exe','file','ASDF']);
         
         expect(outputData).toBe('USAGE MESSAGE');
 

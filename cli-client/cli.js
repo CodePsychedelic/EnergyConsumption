@@ -1,6 +1,6 @@
 function help(){
-    console.log('Usage: node energy_group035 SCOPE <arg> <options>');
-    console.log('<arg>: ActualTotalLoad | DayAheadTotalLoadForecast | AggregatedGenerationPerType | ActualvsForecast | Admin | Login | Logout | Reset | Healthcheck');
+    console.log('Usage: node energy_group035 <SCOPE> <options>');
+    console.log('<SCOPE>: ActualTotalLoad | DayAheadTotalLoadForecast | AggregatedGenerationPerType | ActualvsForecast | Admin | Login | Logout | Reset | Healthcheck');
     console.log('<options>(sets): timeres, area, date, prodtype(aggregated),format{optional}');
     console.log('<options>(Admin): userstatus, newuser (email, passw, quota), moduser (email, passw, quota *), newdata (source)}');
     console.log('<options>(Login): username, passw');
@@ -28,13 +28,14 @@ function help(){
 
     cli 
         .version('1.1.0')
-        .description('Command Line Interface for softeng');
+        .description('Command Line Interface for softeng')
+        .arguments('<SCOPE>')
 
-    cli
-        .command('SCOPE <arg>')
-        .action(async arg => {
+    
+        //.command('<SCOPE>')
+        .action(async SCOPE => {
             
-            if(arg === 'Admin') {
+            if(SCOPE === 'Admin') {
                 
                 let response = undefined;
 
@@ -49,11 +50,11 @@ function help(){
                 if(response !== undefined) console.log(response);
                 // ------------------------------------------------------------------------------------------------------
             }
-            else if(arg === 'ActualTotalLoad' || arg === 'DayAheadTotalLoadForecast' || arg === 'AggregatedGenerationPerType' || arg === 'ActualvsForecast'){
+            else if(SCOPE === 'ActualTotalLoad' || SCOPE === 'DayAheadTotalLoadForecast' || SCOPE === 'AggregatedGenerationPerType' || SCOPE === 'ActualvsForecast'){
                 let response = undefined;
                 // data option handlers if scope === ...(file)
                 // ------------------------------------------------------------------------------------------------------
-                switch(arg){
+                switch(SCOPE){
                     case 'ActualTotalLoad':
                         (process.env.RUN === 'TEST')? console.log('Actual'): response = await load_query(cli,'ActualTotalLoad');
                         break;
@@ -72,19 +73,19 @@ function help(){
                 if(response !== undefined) console.log(response);
                 
             }
-            else if(arg === 'HealthCheck'){
+            else if(SCOPE === 'HealthCheck'){
                 let response = undefined;
                 (process.env.RUN === 'TEST')? console.log('health'): response = await hcheck(cli);
                 if(response !== undefined) console.log(response);
-            }else if(arg === 'Reset'){
+            }else if(SCOPE === 'Reset'){
                 (process.env.RUN === 'TEST')? console.log('reset'):reset(cli);
             }
-            else if(arg === 'Login'){
+            else if(SCOPE === 'Login'){
                 let response = undefined;
                 (process.env.RUN === 'TEST')? console.log('login'): response = await login(cli);
                 if(response !== undefined) console.log(response);
             }
-            else if(arg === 'Logout'){
+            else if(SCOPE === 'Logout'){
                 let response = undefined;
                 (process.env.RUN === 'TEST')? console.log('logout'): response = await logout(cli);
                 if(response !== undefined) console.log(response);
@@ -95,11 +96,6 @@ function help(){
             }
         });
 
-    cli
-        .command('*')
-        .action(() => {
-            (process.env.RUN === 'TEST')? console.log('USAGE MESSAGE'):help();
-        });
 
     // administration options
     // ----------------------------------------------------------------------------

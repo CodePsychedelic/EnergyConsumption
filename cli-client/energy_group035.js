@@ -3,8 +3,8 @@ const {setup} = require('./variables');
 
 
 function help(){
-    console.log('Usage: node energy_group035 SCOPE <arg> <options>');
-    console.log('<arg>: ActualTotalLoad | DayAheadTotalLoadForecast | AggregatedGenerationPerType | ActualvsForecast | Admin | Login | Logout | Reset | Healthcheck');
+    console.log('Usage: node energy_group035 <SCOPE> <options>');
+    console.log('<SCOPE>: ActualTotalLoad | DayAheadTotalLoadForecast | AggregatedGenerationPerType | ActualvsForecast | Admin | Login | Logout | Reset | Healthcheck');
     console.log('<options>(sets): timeres, area, date, prodtype(aggregated),format{optional}');
     console.log('<options>(Admin): userstatus, newuser (email, passw, quota), moduser (email, passw, quota *), newdata (source)}');
     console.log('<options>(Login): username, passw');
