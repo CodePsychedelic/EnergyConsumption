@@ -1,0 +1,40 @@
+{
+  "name": "softeng_backend_2020",
+  "version": "1.0.0",
+  "description": "The backend part of our softeng project for 2020",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest --detectOpenHandles",
+    "test-silent": "jest --detectOpenHandles --silent --forceExit",
+    "test-nooh": "jest --silent",
+    "start": "nodemon server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "Team_xx",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jest": "^25.1.2",
+    "axios": "^0.19.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "csv-parser": "^2.3.2",
+    "csv-reader": "^1.0.6",
+    "csv-writer": "^1.5.0",
+    "download-file": "^0.1.5",
+    "express": "^4.17.1",
+    "json2csv": "^4.5.4",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.2",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.2",
+    "pm2": "^4.2.3"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.0",
+    "csv-string": "^3.1.7",
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.2",
+    "qs": "^6.9.1",
+    "supertest": "^4.0.2"
+  }
+}

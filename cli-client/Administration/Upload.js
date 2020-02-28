@@ -1,0 +1,92 @@
+const axios = require('axios');
+const fs = require('fs');
+const FormData = require('form-data');
+const messages = require('../messages');
+
+exports.upload = async (cli) => {
+if(cli.newdata !== 'ActualTotalLoad' && cli.newdata !== 'DayAheadTotalLoadForecast' && cli.newdata !== 'AggregatedGenerationPerType'){
+    return messages.NEW_DATA_ERROR;
+    
+}
+
+if(cli.source === undefined || cli.source.match(/\.csv$/) === null){
+    return messages.SOURCE_ERROR;
+}
+
+
+const path = process.env.FILES + cli.source;
+
+
+
+// set up the headers. Check if token already exists.
+// If it exists, append it as x_observatory_auth
+// -------------------------------------------------------------------------------------
+let token = null;
+try{
+    token = fs.readFileSync(process.env.TOKEN);
+    token = token.toString();
+}catch(err){
+    return messages.AUTH_ERROR;
+    
+}
+
+let file = null;
+try{
+    fs.readFileSync(path);              // check if file exists
+    file = fs.createReadStream(path);   // if yes, create readsteam
+    
+}catch(err){
+    return messages.FILE_NOT_FOUND;     // else return the FNF error msg
+}
+console.log('File to upload: ' + path);
+
+
+let fdata = new FormData();
+
+fdata.append('csv_file', file);
+
+//'Content-Type: multipart/form-data; boundary=--------------------------545202795147331163691976\r\n'
+
+//let str = 'Content-Type: multipart/form-data; boundary=' + fdata.getBoundary();
+let headers = fdata.getHeaders(); //{str};
+headers.x_observatory_auth = token;
+console.log(headers);
+
+
+try{
+    let response = await axios.post( 'http://localhost:8765/energy/api/Admin/' + cli.newdata,
+        fdata,
+        {headers:headers, maxContentLength: Infinity, maxBodyLength: Infinity}
+    )
+    return response.data;
+}catch(err){
+    if(err.response !== undefined) return err.response.data;
+    else{
+        return {
+            code: err.code,
+            no: err.errno,
+            address: err.address
+        };
+    }
+}
+
+/*.then((response) => {
+    console.log(response.data);
+})
+.catch(err => {
+    if(err.response !== undefined) console.log(err.response.data)
+    else {
+        console.log(err.code);
+        console.log(err.errno);
+        console.log(err.address);
+    }
+});*/
+
+
+
+
+
+}
+
+
+
