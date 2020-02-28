@@ -60,11 +60,11 @@ exports.gen_query = async (cli) => {
          let headers = {};
          let token = null;
          try{
-             token = fs.readFileSync('./softeng19bAPI.token');
-             headers.x_observatory_auth = token.toString();
+            token = fs.readFileSync(process.env.TOKEN);
+            headers.x_observatory_auth = token.toString();
          }catch(err){
-             console.log("Waring: Requesting data, without being authenticated");
-         }
+            return messages.AUTH_ERROR;
+        }
  
         
         // check format

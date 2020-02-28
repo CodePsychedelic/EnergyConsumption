@@ -51,10 +51,11 @@ exports.load_query = async (cli, dataset) => {
         let headers = {};
         let token = null;
         try{
-            token = fs.readFileSync('./softeng19bAPI.token');
+            token = fs.readFileSync(process.env.TOKEN);
             headers.x_observatory_auth = token.toString();
         }catch(err){
-            console.log(messages.AUTH_WARNING);
+            //console.log(messages.AUTH_WARNING);
+            return messages.AUTH_ERROR;
         }
 
         

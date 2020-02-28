@@ -141,6 +141,9 @@ node energy_group035 AggregatedGenerationPerType --timeres PT60M --area Greece -
 // Fetch data from AggregatedGenerationPerType,[Greece, PT60M, Fossil (regex) ] grouped by year
 node energy_group035 AggregatedGenerationPerType --timeres PT60M --area Greece --prodtype Fossil --year 2018
 
+// PT30M
+node energy_group035.js ActualTotalLoad --timeres PT30M --area "National Grid BZ" --date 2018-01-04
+
 // ######################################################################################################################################################################
 
 // Logout from admin acc
