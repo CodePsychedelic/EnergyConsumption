@@ -280,7 +280,7 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
 
     // GET - 200 ok by admin (CSV RESPONSE)
     // ---------------------------------------------------------------------------------------------------------------------------
-    it('Should create 200 - OK (ADMIN)', async done => {
+    it.only('Should create 200 - OK (ADMIN)', async done => {
         request.get('/energy/api/ActualTotalLoad/Greece/PT60M/date/2018-01-04?format=csv')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(200)
@@ -331,13 +331,13 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
                         expect(row[6]).toBe('2018');
                         expect(row[7]).toBe('1');
                         expect(row[8]).toBe('4');
-                        expect(row[9]).toBe(date.toISOString());
+                        expect(row[9]).toBe(date.toISOString().replace('T',' ').replace('Z',''));
 
                         // database
                         let r = await ActualTotalLoad.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date});    // find the record in database                
                         expect(r).not.toBe(null);
                         expect(row[10]).toBe(r.TotalLoadValue.toString());
-                        expect(row[11]).toBe(r.UpdateTime.toISOString());
+                        expect(row[11]).toBe(r.UpdateTime.toISOString().replace('T',' ').replace('Z',''));
                         date.setHours(date.getHours()+1);
                     }
                     mongoose.disconnect();
