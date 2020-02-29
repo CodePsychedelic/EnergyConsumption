@@ -257,12 +257,12 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/Solar/../date/YYYY-
                     expect(res.body.results[i].Year).toBe(2018);
                     expect(res.body.results[i].Month).toBe(1);
                     expect(res.body.results[i].Day).toBe(4);
-                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString());   // test the datetime. Will increase by one hour in the end of the loop
+                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString().replace('T',' ').replace('Z',''));   // test the datetime. Will increase by one hour in the end of the loop
                     expect(res.body.results[i].ProductionType).toBe('Solar');
                     let r = await AggregatedGenerationPerType.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date, ProductionTypeId: 17});    // find the record in database                
                     expect(r).not.toBe(null);                                                                           // should not be null
                     expect(res.body.results[i].ActualGenerationOutputValue).toBe(r.ActualGenerationOutput);             // and GenValues must agree
-                    expect(res.body.results[i].UpdateTimeUTC).toBe(r.UpdateTime.toISOString());
+                    expect(res.body.results[i].UpdateTimeUTC).toBe(r.UpdateTime.toISOString().replace('T',' ').replace('Z',''));
                     // ------------------------------------------------------------------------
                     
                     // ASC 
@@ -332,13 +332,13 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/Solar/../date/YYYY-
                         expect(row[6]).toBe('2018');
                         expect(row[7]).toBe('1');
                         expect(row[8]).toBe('4');
-                        expect(row[9]).toBe(date.toISOString());
+                        expect(row[9]).toBe(date.toISOString().replace('T',' ').replace('Z',''));
                         expect(row[10]).toBe('Solar');
 
                         let r = await AggregatedGenerationPerType.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date, ProductionTypeId: 17});    // find the record in database                
                         expect(r).not.toBe(null);                                                                           // should not be null
                         expect(row[11]).toBe(r.ActualGenerationOutput.toString());             // and GenValues must agree
-                        expect(row[12]).toBe(r.UpdateTime.toISOString());
+                        expect(row[12]).toBe(r.UpdateTime.toISOString().replace('T',' ').replace('Z',''));
 
                         date.setHours(date.getHours()+1);
                     }

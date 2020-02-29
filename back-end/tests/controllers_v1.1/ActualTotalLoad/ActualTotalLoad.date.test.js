@@ -261,11 +261,11 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
                     expect(res.body.results[i].Year).toBe(2018);
                     expect(res.body.results[i].Month).toBe(1);
                     expect(res.body.results[i].Day).toBe(4);
-                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString());   // test the datetime. Will increase by one hour in the end of the loop
+                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString().replace('T',' ').replace('Z',''));   // test the datetime. Will increase by one hour in the end of the loop
                     let r = await ActualTotalLoad.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date});    // find the record in database                
                     expect(r).not.toBe(null);                                                                           // should not be null
                     expect(res.body.results[i].ActualTotalLoadValue).toBe(r.TotalLoadValue);                            // and TotalLoadValues must agree
-                    expect(res.body.results[i].UpdateTimeUTC).toBe(r.UpdateTime.toISOString());
+                    expect(res.body.results[i].UpdateTimeUTC).toBe(r.UpdateTime.toISOString().replace('T',' ').replace('Z',''));
                     // ------------------------------------------------------------------------
                     
                     
@@ -280,7 +280,7 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
 
     // GET - 200 ok by admin (CSV RESPONSE)
     // ---------------------------------------------------------------------------------------------------------------------------
-    it.only('Should create 200 - OK (ADMIN)', async done => {
+    it('Should create 200 - OK (ADMIN)', async done => {
         request.get('/energy/api/ActualTotalLoad/Greece/PT60M/date/2018-01-04?format=csv')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(200)

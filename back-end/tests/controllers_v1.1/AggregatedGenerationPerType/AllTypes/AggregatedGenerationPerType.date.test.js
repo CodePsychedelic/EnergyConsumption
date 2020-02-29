@@ -256,7 +256,7 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/AllTypes/../date/YY
                     expect(res.body.results[i].Year).toBe(2018);
                     expect(res.body.results[i].Month).toBe(1);
                     expect(res.body.results[i].Day).toBe(4);
-                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString());   // test the datetime. Will increase by one hour in the end of the loop
+                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString().replace('T',' ').replace('Z',''));   // test the datetime. Will increase by one hour in the end of the loop
                     
                     expect(
                         res.body.results[i].ProductionType === 'Fossil Gas' || 
@@ -274,7 +274,7 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/AllTypes/../date/YY
                     expect(r2).not.toBe(null);
 
                     expect(res.body.results[i].ActualGenerationOutputValue).toBe(r2.ActualGenerationOutput);
-                    expect(res.body.results[i].UpdateTimeUTC).toBe(r2.UpdateTime.toISOString());
+                    expect(res.body.results[i].UpdateTimeUTC).toBe(r2.UpdateTime.toISOString().replace('T',' ').replace('Z',''));
                     // ------------------------------------------------------------------------
                     
                     // ASC 
