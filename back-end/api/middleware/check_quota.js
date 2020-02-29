@@ -19,9 +19,9 @@ module.exports = async (req, res, next) => {
         console.log(now_date.getDate() + " " + last_refresh.getDate());
     
 
-        if( now_date.getFullYear() > last_refresh.getFullYear() || 
+        if(last_refresh < now_date && (now_date.getFullYear() > last_refresh.getFullYear() || 
             now_date.getMonth() > last_refresh.getMonth() ||
-            now_date.getDate() > last_refresh.getDate() )
+            now_date.getDate() > last_refresh.getDate()) )
         {
             // now year will be either same or greater than last refresh
             // if same year, check if month is greater. Month grater or same
