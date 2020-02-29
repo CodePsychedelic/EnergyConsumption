@@ -11,7 +11,7 @@ module.exports = {
             Year: Number(data.y),
             Month: Number(data.m),
             Day: Number(data.d),
-            DateTimeUTC: document.DateTime,
+            DateTimeUTC: document.DateTime.toISOString().replace('T',' ').replace('Z',''),
             DayAheadTotalLoadForecastValue: document.TotalLoadValue,
             ActualTotalLoadValue: document.ForActualTotalLoad[0].TotalLoadValue
         }
@@ -42,16 +42,10 @@ module.exports = {
         fieldDelimiter: ';'
         });
 
-        // We want to return UTC datetimes, therefore we are going to write the dates as ISO strings
-        // to prevent csv writer nonsense.
-        let docs2 = docs.map(doc => {
-            console.log(doc);
-            doc.DateTimeUTC = doc.DateTimeUTC.toISOString();
-            return doc;
-        });
+   
         
         return csvWriter
-        .writeRecords(docs2);
+        .writeRecords(docs);
         
         
 
