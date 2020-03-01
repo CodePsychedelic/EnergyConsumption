@@ -64,7 +64,10 @@ exports.query = function (areaname, rescode, ptype, data_format, group, tokens, 
             }
 
             AggregatedGenerationPerType.findOne({"AreaName": areaname}).then(areaname_doc => {
-                
+                if(areaname_doc === null){
+                    next(errors.NO_DATA);
+                    return;
+                }
                 const AreaTypeCodeId = areaname_doc.AreaTypeCodeId;  // AreaTypeCodeid to get AreaTypeCodeText
                 const MapCodeId = areaname_doc.MapCodeId;    // MapCodeid to get MapCodetext
             

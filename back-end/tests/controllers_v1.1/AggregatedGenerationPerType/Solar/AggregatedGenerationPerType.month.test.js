@@ -561,9 +561,30 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/Solar/../month/YYYY
     });
     // ---------------------------------------------------------------------------------------------------------------------------
 
+
     // GET - 403 NO_DATA /energy/api/AggregatedGenerationPerType/Greece/PT30M/date/2018-01-04
     // ---------------------------------------------------------------------------------------------------------------------------
-    it('Should create 403 - NO DATA', async done => {
+    it('Should create 403 - AREANAME', async done => {
+        request.get('/energy/api/AggregatedGenerationPerType/Aust/Solar/PT60M/month/2018-01')
+        .set({'X_OBSERVATORY_AUTH':token})
+        .expect(403)
+        .end((err, res) => {
+            if(!err){
+                expect(res.body).toHaveProperty('code');
+                expect(res.body.code).toBe(403);
+
+                expect(res.body).toHaveProperty('message');
+                expect(res.body.message).toBe('No data');
+                done();
+            }else return done(err);
+        })
+    });        
+    // ---------------------------------------------------------------------------------------------------------------------------
+
+
+    // GET - 403 NO_DATA /energy/api/AggregatedGenerationPerType/Greece/PT30M/date/2018-01-04
+    // ---------------------------------------------------------------------------------------------------------------------------
+    it('Should create 403 - NO DATA - TIMERES', async done => {
         request.get('/energy/api/AggregatedGenerationPerType/Greece/Solar/PT30M/month/2018-01')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(403)
@@ -579,6 +600,46 @@ describe('GET /energy/api/AggregatedGenerationPerType/Greece/Solar/../month/YYYY
         })
     });        
     // ---------------------------------------------------------------------------------------------------------------------------
+
+
+    // GET - 403 NO_DATA /energy/api/AggregatedGenerationPerType/Greece/PT30M/date/2018-01-04
+    // ---------------------------------------------------------------------------------------------------------------------------
+    it('Should create 403 - NO DATA - PRODUCTIONTYPE', async done => {
+        request.get('/energy/api/AggregatedGenerationPerType/Greece/hhhhhh/PT60M/month/2018-01')
+        .set({'X_OBSERVATORY_AUTH':token})
+        .expect(403)
+        .end((err, res) => {
+            if(!err){
+                expect(res.body).toHaveProperty('code');
+                expect(res.body.code).toBe(403);
+
+                expect(res.body).toHaveProperty('message');
+                expect(res.body.message).toBe('No data');
+                done();
+            }else return done(err);
+        })
+    });        
+    // ---------------------------------------------------------------------------------------------------------------------------
+
+    // GET - 403 NO_DATA /energy/api/AggregatedGenerationPerType/Greece/PT30M/date/2018-01-04
+    // ---------------------------------------------------------------------------------------------------------------------------
+    it('Should create 403 - NO DATA - MONTH', async done => {
+        request.get('/energy/api/AggregatedGenerationPerType/Greece/Solar/PT60M/month/2018-11')
+        .set({'X_OBSERVATORY_AUTH':token})
+        .expect(403)
+        .end((err, res) => {
+            if(!err){
+                expect(res.body).toHaveProperty('code');
+                expect(res.body.code).toBe(403);
+
+                expect(res.body).toHaveProperty('message');
+                expect(res.body.message).toBe('No data');
+                done();
+            }else return done(err);
+        })
+    });        
+    // ---------------------------------------------------------------------------------------------------------------------------
+
 
 
 

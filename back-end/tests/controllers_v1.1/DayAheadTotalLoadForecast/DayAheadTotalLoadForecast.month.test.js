@@ -561,7 +561,27 @@ describe('GET /energy/api/DayAheadTotalLoadForecast/../month/YYYY-MM', () => {
 
     // GET - 403 NO_DATA /energy/api/ActualTotalLoad/Greece/PT30M/date/2018-01-04
     // ---------------------------------------------------------------------------------------------------------------------------
-    it('Should create 403 - NO DATA', async done => {
+    it('Should create 403 - NO DATA - AREANAME', async done => {
+        request.get('/energy/api/DayAheadTotalLoadForecast/Aust/PT60M/month/2018-01')
+        .set({'X_OBSERVATORY_AUTH':token})
+        .expect(403)
+        .end((err, res) => {
+            if(!err){
+                expect(res.body).toHaveProperty('code');
+                expect(res.body.code).toBe(403);
+
+                expect(res.body).toHaveProperty('message');
+                expect(res.body.message).toBe('No data');
+                done();
+            }else return done(err);
+        })
+    });        
+    // ---------------------------------------------------------------------------------------------------------------------------
+
+
+    // GET - 403 NO_DATA /energy/api/ActualTotalLoad/Greece/PT30M/date/2018-01-04
+    // ---------------------------------------------------------------------------------------------------------------------------
+    it('Should create 403 - NO DATA - TIMERES', async done => {
         request.get('/energy/api/DayAheadTotalLoadForecast/Greece/PT30M/month/2018-01')
         .set({'X_OBSERVATORY_AUTH':token})
         .expect(403)
@@ -578,6 +598,24 @@ describe('GET /energy/api/DayAheadTotalLoadForecast/../month/YYYY-MM', () => {
     });        
     // ---------------------------------------------------------------------------------------------------------------------------
 
+    // GET - 403 NO_DATA /energy/api/ActualTotalLoad/Greece/PT30M/date/2018-01-04
+    // ---------------------------------------------------------------------------------------------------------------------------
+    it('Should create 403 - NO DATA - MONTH', async done => {
+        request.get('/energy/api/DayAheadTotalLoadForecast/Greece/PT60M/month/2018-11')
+        .set({'X_OBSERVATORY_AUTH':token})
+        .expect(403)
+        .end((err, res) => {
+            if(!err){
+                expect(res.body).toHaveProperty('code');
+                expect(res.body.code).toBe(403);
+
+                expect(res.body).toHaveProperty('message');
+                expect(res.body.message).toBe('No data');
+                done();
+            }else return done(err);
+        })
+    });        
+    // ---------------------------------------------------------------------------------------------------------------------------
 
 
 });
