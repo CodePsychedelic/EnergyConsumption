@@ -261,11 +261,11 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
                     expect(res.body.results[i].Year).toBe(2018);
                     expect(res.body.results[i].Month).toBe(1);
                     expect(res.body.results[i].Day).toBe(4);
-                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString());   // test the datetime. Will increase by one hour in the end of the loop
+                    expect(res.body.results[i].DateTimeUTC).toBe(date.toISOString().replace('T',' ').replace('Z',''));   // test the datetime. Will increase by one hour in the end of the loop
                     let r = await ActualTotalLoad.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date});    // find the record in database                
                     expect(r).not.toBe(null);                                                                           // should not be null
                     expect(res.body.results[i].ActualTotalLoadValue).toBe(r.TotalLoadValue);                            // and TotalLoadValues must agree
-                    expect(res.body.results[i].UpdateTimeUTC).toBe(r.UpdateTime.toISOString());
+                    expect(res.body.results[i].UpdateTimeUTC).toBe(r.UpdateTime.toISOString().replace('T',' ').replace('Z',''));
                     // ------------------------------------------------------------------------
                     
                     
@@ -331,13 +331,13 @@ describe('GET /energy/api/ActualTotalLoad/../year/YYYY-MM-DD', () => {
                         expect(row[6]).toBe('2018');
                         expect(row[7]).toBe('1');
                         expect(row[8]).toBe('4');
-                        expect(row[9]).toBe(date.toISOString());
+                        expect(row[9]).toBe(date.toISOString().replace('T',' ').replace('Z',''));
 
                         // database
                         let r = await ActualTotalLoad.findOne({AreaName:'Greece', ResolutionCodeId: 2, DateTime: date});    // find the record in database                
                         expect(r).not.toBe(null);
                         expect(row[10]).toBe(r.TotalLoadValue.toString());
-                        expect(row[11]).toBe(r.UpdateTime.toISOString());
+                        expect(row[11]).toBe(r.UpdateTime.toISOString().replace('T',' ').replace('Z',''));
                         date.setHours(date.getHours()+1);
                     }
                     mongoose.disconnect();
