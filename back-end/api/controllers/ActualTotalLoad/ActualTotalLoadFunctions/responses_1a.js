@@ -1,11 +1,3 @@
-
-function pad(number) {
-    if (number < 10) {
-      return '0' + number;
-    }
-    return number;
-  }
-
 module.exports = {
     // for json format
     generateResponse_json: function(data,document){
